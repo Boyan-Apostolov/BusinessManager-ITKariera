@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
+using VocationManager.Services.SeederService;
 
 namespace VocationManager
 {
@@ -24,11 +25,27 @@ namespace VocationManager
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedAccount = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+                .AddRoles<IdentityRole>()
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddTransient<ISeederService, SeederService>();
+            builder.Services.AddSingleton(builder.Configuration);
+            builder.Services.AddScoped<ApplicationDbContext>();
+
+
             var app = builder.Build();
+
+            using (var serviceScope = app.Services.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
+             
+                new SeederService(dbContext, serviceScope.ServiceProvider).InitiateSeed().GetAwaiter().GetResult();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -56,6 +73,8 @@ namespace VocationManager
             app.MapRazorPages();
 
             app.Run();
+
+
         }
     }
 }
