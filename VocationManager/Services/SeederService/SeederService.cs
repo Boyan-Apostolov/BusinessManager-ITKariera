@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
+using VocationManager.Services.DTOs;
 
 namespace VocationManager.Services.SeederService
 {
@@ -12,7 +13,7 @@ namespace VocationManager.Services.SeederService
         private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly List<string> DefaultRoles;
-        private readonly List<UserWithRoleDto> DefaultUsers;
+        private readonly List<SeededUserDto> DefaultUsers;
 
         public SeederService(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
@@ -20,14 +21,11 @@ namespace VocationManager.Services.SeederService
             _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            DefaultRoles = new List<string>
-            {
-                "CEO", "Developer", "Team Lead", "Unassigned"
-            };
+            DefaultRoles = Enum.GetNames(typeof(DefaultRoles)).ToList();
 
-            DefaultUsers = new List<UserWithRoleDto>
+            DefaultUsers = new List<SeededUserDto>
             {
-                new UserWithRoleDto()
+                new SeededUserDto()
                 {
                     Username = "admin",
                     Email = "admin@voc-manager.com",
@@ -36,7 +34,7 @@ namespace VocationManager.Services.SeederService
                     Password = "Admin123",
                     RoleName = DefaultRoles[0],
                 },
-                new UserWithRoleDto()
+                new SeededUserDto()
                 {
                     Username = "dev",
                     Email = "dev@voc-manager.com",
@@ -45,7 +43,7 @@ namespace VocationManager.Services.SeederService
                     Password = "Developer123",
                     RoleName = DefaultRoles[1],
                 },
-                new UserWithRoleDto()
+                new SeededUserDto()
                 {
                     Username = "team-lead",
                     Email = "team-lead@voc-manager.com",
@@ -53,8 +51,8 @@ namespace VocationManager.Services.SeederService
                     LastName = "Bossy",
                     Password = "Team-lead123",
                     RoleName = DefaultRoles[2],
-                },
-                new UserWithRoleDto()
+                },  
+                new SeededUserDto()
                 {
                     Username = "new-user",
                     Email = "user-user@voc-manager.com",
@@ -114,22 +112,5 @@ namespace VocationManager.Services.SeederService
                 await _dbContext.SaveChangesAsync();
             }
         }
-    }
-
-    public class UserWithRoleDto
-    {
-        public int Id { get; set; }
-
-        public string Username { get; set; }
-
-        public string Email { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string RoleName { get; set; }
-
-        public string Password { get; set; }
     }
 }

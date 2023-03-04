@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VocationManager.Services.SeederService;
+using VocationManager.Services.DTOs;
 
 namespace VocationManager.Data
 {

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using VocationManager.Services.DTOs
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,6 +26,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if(User.Identity.IsAuthenticated)
+                        {
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                User actions
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">All users</a>
+                                @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                                {
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create">Create user</a>
+                                }
+                            </ul>
+                        </div>
+                        }
+                        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
