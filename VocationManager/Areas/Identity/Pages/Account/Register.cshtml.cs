@@ -135,8 +135,6 @@ namespace VocationManager.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
 
-                //TODO: Default role = Unassigned
-
                 if (_userManager.Users.Any(u => u.Email == Input.Email))
                 {
                     ModelState.AddModelError(string.Empty, $"User with the email {Input.Email} already exists!");
