@@ -13,6 +13,7 @@ namespace VocationManager.Services.UsersService
         Task<ICollection<BaseUserDto>> GetAllAsync();
         Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true);
         Task CreateAsync(CreateUserDto userDto);
+        Task EditAsync(BaseUserDto userDto);
         Task DeleteAsync(string userId);
         Task<bool> UserExists(string userId);
     }

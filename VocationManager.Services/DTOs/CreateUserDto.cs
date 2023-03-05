@@ -5,6 +5,7 @@
         public CreateUserDto()
         {
             Id = "new-user";
+            SelectedRole = Enum.GetName(DefaultRoles.Unassigned);
         }
 
         public string Password { get; set; }

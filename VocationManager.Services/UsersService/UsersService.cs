@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VocationManager.Data;
 using VocationManager.Services.DTOs;
+using VocationManager.Services.RolesService;
 
 namespace VocationManager.Services.UsersService
 {
@@ -16,13 +17,17 @@ namespace VocationManager.Services.UsersService
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IRolesService _rolesService;
 
         public UsersService(ApplicationDbContext dbContext,
-            UserManager<ApplicationUser> userManager, IMapper mapper)
+            UserManager<ApplicationUser> userManager,
+            IMapper mapper,
+            IRolesService rolesService)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _mapper = mapper;
+            _rolesService = rolesService;
         }
 
         public async Task<ICollection<BaseUserDto>> GetAllAsync()
@@ -32,7 +37,12 @@ namespace VocationManager.Services.UsersService
                 .AsNoTracking()
                 .ToListAsync();
 
-            return _mapper.Map<ICollection<BaseUserDto>>(users);
+            var usersDtos = _mapper.Map<List<BaseUserDto>>(users);
+            usersDtos.ForEach(u =>
+            {
+                u.RoleName = _rolesService.GetRoleNameByUserId(u.Id).GetAwaiter().GetResult();
+            });
+            return usersDtos;
 
         }
 
@@ -49,7 +59,9 @@ namespace VocationManager.Services.UsersService
             var user = await usersQueryable
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            return _mapper.Map<BaseUserDto>(user);
+            var mappedUser = _mapper.Map<BaseUserDto>(user);
+            mappedUser.RoleName = await _rolesService.GetRoleNameByUserId(mappedUser.Id);
+            return mappedUser;
         }
 
         public async Task CreateAsync(CreateUserDto userDto)
@@ -66,9 +78,26 @@ namespace VocationManager.Services.UsersService
 
             if (createdUser.Succeeded)
             {
-                //var role = await GetNameById(userDto.SelectedRole);
-                //await _userManager.AddToRoleAsync(userToBeCreated, role);
+                var role = await _rolesService.GetNameById(userDto.SelectedRole);
+                await _userManager.AddToRoleAsync(userToBeCreated, role);
             }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task EditAsync(BaseUserDto userDto)
+        {
+            var domainUser = await _dbContext
+                .ApplicationUsers
+                .FirstOrDefaultAsync(u => u.Id == userDto.Id);
+            if (domainUser == null) return;
+
+            domainUser.FirstName = userDto.FirstName;
+            domainUser.LastName = userDto.LastName;
+            domainUser.Email = userDto.Email;
+            domainUser.NormalizedEmail = userDto.Email.Normalize();
+            domainUser.UserName = userDto.Username;
+            domainUser.NormalizedUserName = userDto.Username.Normalize();
 
             await _dbContext.SaveChangesAsync();
         }

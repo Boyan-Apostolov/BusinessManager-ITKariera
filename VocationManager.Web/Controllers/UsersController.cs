@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
 using VocationManager.Services.DTOs;
+using VocationManager.Services.RolesService;
 using VocationManager.Services.UsersService;
 
 namespace VocationManager.Controllers
@@ -20,13 +21,17 @@ namespace VocationManager.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
+        private readonly IRolesService _rolesService;
 
         public UsersController(ApplicationDbContext context,
-            IUsersService usersService, IMapper mapper)
+            IUsersService usersService, 
+            IMapper mapper,
+            IRolesService rolesService)
         {
             _context = context;
             _usersService = usersService;
             _mapper = mapper;
+            _rolesService = rolesService;
         }
 
         public async Task<IActionResult> Index()
@@ -50,7 +55,7 @@ namespace VocationManager.Controllers
         [Authorize(Roles = "CEO")]
         public IActionResult Create()
         {
-            ViewBag.AvailableRoles = GetAllAsKeyValuePairs();
+            ViewBag.AvailableRoles = _rolesService.GetAllAsKeyValuePairs();
             return View();
         }
 
@@ -73,39 +78,15 @@ namespace VocationManager.Controllers
 
             if (ModelState.ErrorCount != 0)
             {
-                ViewBag.AvailableRoles = GetAllAsKeyValuePairs();
+                ViewBag.AvailableRoles = _rolesService.GetAllAsKeyValuePairs();
                 return View(userDto);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        //TODO: Move to roles service
-        public IEnumerable<KeyValuePair<string, string>> GetAllAsKeyValuePairs()
-        {
-            return _context
-                .Roles
-                .ToArray()
-                .Select(x => new
-                {
-                    x.Id,
-                    x.Name,
-                })
-                .OrderBy(x => x.Name)
-                .ToList().Select(x => new KeyValuePair<string, string>(x.Id, x.Name));
-        }
-
-        public async Task<string> GetNameById(string id)
-        {
-            return (
-                await _context
-                .Roles
-                .FindAsync(id)
-                ).Name;
-        }
-
         [Authorize(Roles = "CEO")]
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(string id)
         {
             var user = await _usersService.GetByIdAsync(id);
             if (user == null)
@@ -128,21 +109,7 @@ namespace VocationManager.Controllers
 
             if (ModelState.IsValid)
             {
-                var domainUser = await _context.ApplicationUsers
-                    .FirstOrDefaultAsync(m => m.Id == id);
-                if (domainUser == null)
-                {
-                    return NotFound();
-                }
-
-                domainUser.FirstName = userDto.FirstName;
-                domainUser.LastName = userDto.LastName;
-                domainUser.Email = userDto.Email;
-                domainUser.NormalizedEmail = userDto.Email.Normalize();
-                domainUser.UserName = userDto.Username;
-                domainUser.NormalizedUserName = userDto.Username.Normalize();
-
-                await _context.SaveChangesAsync();
+                await _usersService.EditAsync(userDto);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -151,7 +118,7 @@ namespace VocationManager.Controllers
 
 
         [Authorize(Roles = "CEO")]
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> Delete(string id)
         {
             var user = await _usersService.GetByIdAsync(id);
             if (user == null)
