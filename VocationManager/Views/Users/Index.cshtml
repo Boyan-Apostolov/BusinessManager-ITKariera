@@ -1,7 +1,7 @@
 ﻿@using VocationManager.Services.DTOs
 @using VocationManager.Services
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model ICollection<VocationManager.Data.ApplicationUser>
+@model ICollection<BaseUserDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -39,7 +39,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
+                    @Html.DisplayFor(modelItem => item.Username)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)

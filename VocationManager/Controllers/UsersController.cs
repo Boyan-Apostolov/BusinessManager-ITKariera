@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +18,15 @@ namespace VocationManager.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUsersService _usersService;
+        private readonly IMapper _mapper;
 
         public UsersController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            IUsersService usersService)
+            IUsersService usersService, IMapper mapper)
         {
             _context = context;
-            _userManager = userManager;
             _usersService = usersService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -113,7 +113,7 @@ namespace VocationManager.Controllers
                 return NotFound();
             }
 
-            return View(new BaseUserDto(user));
+            return View(user);
         }
 
         [HttpPost]

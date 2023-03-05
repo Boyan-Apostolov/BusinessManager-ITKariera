@@ -1,3 +1,5 @@
+using AutoMapper;
+using GlobalConstants.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
@@ -32,6 +34,8 @@ namespace VocationManager
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
             builder.Services.AddSingleton(builder.Configuration);
             builder.Services.AddScoped<ApplicationDbContext>();

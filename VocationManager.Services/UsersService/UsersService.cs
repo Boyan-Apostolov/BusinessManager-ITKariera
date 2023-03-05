@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,27 +15,34 @@ namespace VocationManager.Services.UsersService
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
         public UsersService(ApplicationDbContext dbContext,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
-        public async Task<ICollection<ApplicationUser>> GetAllAsync()
+        public async Task<ICollection<BaseUserDto>> GetAllAsync()
         {
-            return await _dbContext
+            var users = await _dbContext
                 .ApplicationUsers
                 .ToListAsync();
+            
+            return _mapper.Map<ICollection<BaseUserDto>>(users);
+
         }
 
-        public async Task<ApplicationUser?> GetByIdAsync(string userId)
+        public async Task<BaseUserDto?> GetByIdAsync(string userId)
         {
-            return await
+            var user = await
                 _dbContext
                     .ApplicationUsers
                     .FirstOrDefaultAsync(u => u.Id == userId);
+
+            return _mapper.Map<BaseUserDto>(user);
         }
 
         public async Task CreateAsync(CreateUserDto userDto)
@@ -63,7 +71,8 @@ namespace VocationManager.Services.UsersService
             var user = await GetByIdAsync(userId);
             if (user == null) return;
 
-            _dbContext.Users.Remove(user);
+            var domainUser = _mapper.Map<ApplicationUser>(user);
+            _dbContext.Users.Remove(domainUser);
             await _dbContext.SaveChangesAsync();
         }
 

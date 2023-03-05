@@ -1,7 +1,7 @@
 ﻿@using VocationManager.Services.DTOs
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using VocationManager.Services
-@model VocationManager.Data.ApplicationUser
+@model BaseUserDto
 
 @{
     ViewData["Title"] = "Details";
@@ -12,10 +12,10 @@
 <div>
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayNameFor(model => model.Username)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
+            @Html.DisplayFor(model => model.Username)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
