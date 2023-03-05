@@ -11,7 +11,7 @@ namespace VocationManager.Services.UsersService
     public interface IUsersService
     {
         Task<ICollection<BaseUserDto>> GetAllAsync();
-        Task<BaseUserDto?> GetByIdAsync(string userId);
+        Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true);
         Task CreateAsync(CreateUserDto userDto);
         Task DeleteAsync(string userId);
         Task<bool> UserExists(string userId);

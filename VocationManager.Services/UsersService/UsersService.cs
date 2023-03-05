@@ -29,18 +29,25 @@ namespace VocationManager.Services.UsersService
         {
             var users = await _dbContext
                 .ApplicationUsers
+                .AsNoTracking()
                 .ToListAsync();
-            
+
             return _mapper.Map<ICollection<BaseUserDto>>(users);
 
         }
 
-        public async Task<BaseUserDto?> GetByIdAsync(string userId)
+        public async Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true)
         {
-            var user = await
-                _dbContext
+            var usersQueryable = _dbContext
                     .ApplicationUsers
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                    .AsNoTracking();
+            if (disableTracking)
+            {
+                usersQueryable = usersQueryable.AsNoTracking();
+            }
+
+            var user = await usersQueryable
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             return _mapper.Map<BaseUserDto>(user);
         }
@@ -68,11 +75,12 @@ namespace VocationManager.Services.UsersService
 
         public async Task DeleteAsync(string userId)
         {
-            var user = await GetByIdAsync(userId);
+            var user = await _dbContext
+                .ApplicationUsers
+                .FirstOrDefaultAsync(u=>u.Id == userId);
             if (user == null) return;
 
-            var domainUser = _mapper.Map<ApplicationUser>(user);
-            _dbContext.Users.Remove(domainUser);
+            _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
         }
 

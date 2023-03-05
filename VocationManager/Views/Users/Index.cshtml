@@ -1,6 +1,7 @@
 ﻿@using VocationManager.Services.DTOs
 @using VocationManager.Services
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
 @model ICollection<BaseUserDto>
 
 @{
@@ -42,11 +43,14 @@
                             </button>
                         </a>
 
-                        <a asp-action="Delete" asp-route-id="@user.Id">
-                            <button class="btn btn-danger">
-                                <i class="fas fa-user-times"></i> Delete
-                            </button>
-                        </a>
+                        @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != user.Id)
+                        {
+                            <a asp-action="Delete" asp-route-id="@user.Id">
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-user-times"></i> Delete
+                                </button>
+                            </a>
+                        }
                     }
                 </div>
             </div>
