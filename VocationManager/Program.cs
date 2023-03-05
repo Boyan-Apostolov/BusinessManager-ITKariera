@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
 using VocationManager.Services.SeederService;
+using VocationManager.Services.UsersService;
 
 namespace VocationManager
 {
@@ -32,10 +33,11 @@ namespace VocationManager
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddTransient<ISeederService, SeederService>();
             builder.Services.AddSingleton(builder.Configuration);
             builder.Services.AddScoped<ApplicationDbContext>();
 
+            builder.Services.AddTransient<ISeederService, SeederService>();
+            builder.Services.AddTransient<IUsersService, UsersService>();
 
             var app = builder.Build();
 

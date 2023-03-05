@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
 using VocationManager.Services.DTOs;
+using VocationManager.Services.UsersService;
 
 namespace VocationManager.Controllers
 {
@@ -17,35 +18,33 @@ namespace VocationManager.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUsersService _usersService;
 
         public UsersController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IUsersService usersService)
         {
             _context = context;
             _userManager = userManager;
+            _usersService = usersService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ApplicationUsers.ToListAsync());
+            var users = await _usersService.GetAllAsync();
+            return View(users);
         }
 
         [Authorize(Roles = "CEO,Team_Lead")]
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.ApplicationUsers == null)
+            var user = await _usersService.GetByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var userDto = await _context.ApplicationUsers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (userDto == null)
-            {
-                return NotFound();
-            }
-
-            return View(userDto);
+            return View(user);
         }
 
         [Authorize(Roles = "CEO")]
@@ -62,28 +61,23 @@ namespace VocationManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userToBeCreated = new ApplicationUser()
+                try
                 {
-                    UserName = userDto.Username,
-                    Email = userDto.Email,
-                    FirstName = userDto.FirstName,
-                    LastName = userDto.LastName,
-                };
-
-                var createdUser = await _userManager.CreateAsync(userToBeCreated, userDto.Password);
-
-                if (createdUser.Succeeded)
-                {
-                    var role = await GetNameById(userDto.SelectedRole);
-                    await _userManager.AddToRoleAsync(userToBeCreated, role);
+                    await _usersService.CreateAsync(userDto);
                 }
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                catch (Exception e)
+                {
+                    ModelState.AddModelError(string.Empty, e.Message);
+                }
             }
 
-            ViewBag.AvailableRoles = GetAllAsKeyValuePairs();
-            return View(userDto);
+            if (ModelState.ErrorCount != 0)
+            {
+                ViewBag.AvailableRoles = GetAllAsKeyValuePairs();
+                return View(userDto);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         //TODO: Move to roles service
@@ -113,18 +107,13 @@ namespace VocationManager.Controllers
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Edit(string? id)
         {
-            if (id == null || _context.ApplicationUsers == null)
+            var user = await _usersService.GetByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var userDto = await _context.ApplicationUsers.FindAsync(id);
-            if (userDto == null)
-            {
-                return NotFound();
-            }
-
-            return View(new BaseUserDto(userDto));
+            return View(new BaseUserDto(user));
         }
 
         [HttpPost]
@@ -164,19 +153,13 @@ namespace VocationManager.Controllers
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Delete(string? id)
         {
-            if (id == null || _context.ApplicationUsers == null)
+            var user = await _usersService.GetByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var userDto = await _context.ApplicationUsers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (userDto == null)
-            {
-                return NotFound();
-            }
-
-            return View(userDto);
+            return View(user);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -184,23 +167,8 @@ namespace VocationManager.Controllers
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.ApplicationUsers == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.userDto'  is null.");
-            }
-            var userDto = await _context.ApplicationUsers.FindAsync(id);
-            if (userDto != null)
-            {
-                _context.ApplicationUsers.Remove(userDto);
-            }
-
-            await _context.SaveChangesAsync();
+            await _usersService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(string id)
-        {
-            return _context.ApplicationUsers.Any(e => e.Id == id);
         }
     }
 }
