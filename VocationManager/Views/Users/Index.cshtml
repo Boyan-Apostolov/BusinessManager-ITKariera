@@ -12,45 +12,52 @@
 @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create">
+            <button class="btn btn-success">
+                <i class="fas fa-user-plus"></i> New User
+            </button>
+        </a>
     </p>
 }
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @nameof(BaseUserDto.Username)
-            </th>
-            <th>
-                @nameof(BaseUserDto.Email)
-            </th>
-            <th>
-                @nameof(BaseUserDto.FirstName)
-            </th>
-            <th>
-                @nameof(BaseUserDto.LastName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+@if (Model.Any())
+{
+    <div class="users-wrapper d-flex justify-content-evenly">
+        @foreach (var user in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Username)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
+            <div class="card light-shadow">
+                <div class="card-body">
+                    <h5 class="card-title">@($"{user.FirstName} {user.LastName}")</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@($"{("ROLE_NAME @ Team_NAME")}")</h6>
+                    <p class="card-text">@user.Username</p>
+                    <a asp-action="Details" asp-route-id="@user.Id">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> More info
+                        </button>
+                    </a>
+                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                    {
+                        <a asp-action="Edit" asp-route-id="@user.Id">
+                            <button class="btn btn-warning">
+                                <i class="fas fa-user-edit"></i> Edit
+                            </button>
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@user.Id">
+                            <button class="btn btn-danger">
+                                <i class="fas fa-user-times"></i> Delete
+                            </button>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h6>No users found!</h6>
+}
+@*
                     @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
                     {
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a>
@@ -61,8 +68,5 @@
                     {
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+*@

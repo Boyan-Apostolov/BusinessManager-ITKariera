@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VocationManager.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VocationManager</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -23,22 +24,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @if(User.Identity.IsAuthenticated)
                         {
                         <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                User actions
+                            <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user m-1"></i> User actions
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">All users</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index"> <i class="fas fa-users m-1"></i> All users</a>
                                 @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
                                 {
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create">Create user</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create"><i class="fas fa-user-plus m-1"></i> New user</a>
                                 }
                             </ul>
                         </div>
@@ -58,7 +59,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - VocationManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - VocationManager - <a href="https://github.com/Boyan-Apostolov/VocationManager-ITKariera" >Open Source System</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

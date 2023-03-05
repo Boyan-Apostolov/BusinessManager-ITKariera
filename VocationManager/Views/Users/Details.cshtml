@@ -38,10 +38,24 @@
     </dl>
 </div>
 <div>
+    <a asp-action="Index" >
+        <button class="btn btn-primary">
+            <i class="fas fa-backward"></i> Back to List
+        </button>
+    </a>
+
     @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id">
+            <button class="btn btn-warning">
+                <i class="fas fa-user-edit"></i> Edit
+            </button>
+        </a>
+
+        <a asp-action="Delete" asp-route-id="@Model?.Id">
+            <button class="btn btn-danger">
+                <i class="fas fa-user-times"></i> Delete
+            </button>
+        </a>
     }
-   
-    <a asp-action="Index">Back to List</a>
 </div>

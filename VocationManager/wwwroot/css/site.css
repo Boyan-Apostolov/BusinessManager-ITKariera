@@ -9,10 +9,31 @@ html {
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    background: #3D4B64;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background: #EBEDEE;
+}
+
+main {
+    height: 80vh;
+}
+
+.light-shadow {
+    box-shadow: 30px 22px 40px -10px rgba(0, 0, 0, 0.30);
+}
+
+nav, footer {
+    background: #3D4B64;
+}
+
+nav a, footer div {
+    color: white !important;
+}
+a {
+    text-decoration: none !important;
 }

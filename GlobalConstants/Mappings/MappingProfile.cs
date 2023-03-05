@@ -14,8 +14,9 @@ namespace GlobalConstants.Mappings
         public MappingProfile()
         {
             CreateMap<ApplicationUser, BaseUserDto>();
+            CreateMap<BaseUserDto, ApplicationUser>();
             CreateMap<ApplicationUser, CreateUserDto>();
-            CreateMap<CreateUserDto, ApplicationUser>();
+            CreateMap<CreateUserDto, ApplicationUser>(); 
         }
     }
 }
