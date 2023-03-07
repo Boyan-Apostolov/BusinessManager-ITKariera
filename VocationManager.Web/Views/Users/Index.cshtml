@@ -63,7 +63,7 @@
             </div>
         }
     </div>
-    @await Html.PartialAsync("_Pagination", Model.Paginator)
+    @await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
 }
 else
 {

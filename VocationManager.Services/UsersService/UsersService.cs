@@ -46,7 +46,7 @@ namespace VocationManager.Services.UsersService
 
         }
 
-        public async Task<PaginatedUsersCollectionDto> GetPaginatedUsers(int? page, int? pageSize)
+        public async Task<PaginatedUsersCollectionDto> GetPaginatedAndFilteredUsers(int? page, int? pageSize, string keyword)
         {
             var users = await GetAllAsync();
             var paginator = new Paginator(users.Count, page, pageSize, "Users");
@@ -54,12 +54,21 @@ namespace VocationManager.Services.UsersService
             var paginatedUsers =
                 users
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
-                    .Take(paginator.PageSize)
-                    .ToList();
+                    .Take(paginator.PageSize);
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                keyword = keyword.Trim();
+                paginatedUsers = paginatedUsers
+                    .Where(u => u.Username.Contains(keyword)
+                                || u.FirstName.Contains(keyword)
+                                || u.LastName.Contains(keyword)
+                                || u.RoleName.Contains(keyword))
+                    .AsEnumerable();
+            }
             return new PaginatedUsersCollectionDto()
             {
-                Users = paginatedUsers,
+                Users = paginatedUsers.ToList(),
                 Paginator = paginator
             };
         }
