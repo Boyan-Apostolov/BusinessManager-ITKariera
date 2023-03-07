@@ -34,9 +34,9 @@ namespace VocationManager.Controllers
             _rolesService = rolesService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page = 1, int? pageSize = 2)
         {
-            var users = await _usersService.GetAllAsync();
+            var users = await _usersService.GetPaginatedUsers(page, pageSize);
             return View(users);
         }
 

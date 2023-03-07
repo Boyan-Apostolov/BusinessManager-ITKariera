@@ -2,7 +2,7 @@
 @using VocationManager.Services
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using System.Security.Claims
-@model ICollection<BaseUserDto>
+@model PaginatedUsersCollectionDto
 
 @{
     ViewData["Title"] = "Index";
@@ -20,10 +20,10 @@
         </a>
     </p>
 }
-@if (Model.Any())
+@if (Model.Users.Any())
 {
     <div class="users-wrapper d-flex flex-wrap justify-content-evenly">
-        @foreach (var user in Model)
+        @foreach (var user in Model.Users)
         {
             <div class="card light-shadow m-2" style="flex-basis: 26%">
                 <div class="card-body">
@@ -63,6 +63,7 @@
             </div>
         }
     </div>
+    @await Html.PartialAsync("_Pagination", Model.Paginator)
 }
 else
 {

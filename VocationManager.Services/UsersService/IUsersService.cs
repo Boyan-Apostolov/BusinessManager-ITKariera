@@ -11,6 +11,7 @@ namespace VocationManager.Services.UsersService
     public interface IUsersService
     {
         Task<ICollection<BaseUserDto>> GetAllAsync();
+        Task<PaginatedUsersCollectionDto> GetPaginatedUsers(int? page, int? pageSize);
         Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true);
         Task CreateAsync(CreateUserDto userDto);
         Task EditAsync(BaseUserDto userDto);

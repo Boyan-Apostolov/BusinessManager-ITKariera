@@ -1,11 +1,11 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
@@ -27,13 +27,17 @@ main {
     box-shadow: 30px 22px 40px -10px rgba(0, 0, 0, 0.30);
 }
 
-nav, footer {
+.custom-nav, footer {
     background: #3D4B64;
 }
 
-nav a, footer div {
+.custom-nav a, footer div {
     color: white !important;
 }
+    .custom-nav .dropdown-menu a {
+        color: black !important;
+    }
+
 a {
     text-decoration: none !important;
 }

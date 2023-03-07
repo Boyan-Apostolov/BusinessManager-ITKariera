@@ -46,6 +46,24 @@ namespace VocationManager.Services.UsersService
 
         }
 
+        public async Task<PaginatedUsersCollectionDto> GetPaginatedUsers(int? page, int? pageSize)
+        {
+            var users = await GetAllAsync();
+            var paginator = new Paginator(users.Count, page, pageSize, "Users");
+
+            var paginatedUsers =
+                users
+                    .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
+                    .Take(paginator.PageSize)
+                    .ToList();
+
+            return new PaginatedUsersCollectionDto()
+            {
+                Users = paginatedUsers,
+                Paginator = paginator
+            };
+        }
+
         public async Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true)
         {
             var usersQueryable = _dbContext
