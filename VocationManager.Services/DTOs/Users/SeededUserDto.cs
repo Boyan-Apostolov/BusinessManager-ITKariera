@@ -1,4 +1,4 @@
-﻿namespace VocationManager.Services.DTOs
+﻿namespace VocationManager.Services.DTOs.Users
 {
     public class SeededUserDto : BaseUserDto
     {

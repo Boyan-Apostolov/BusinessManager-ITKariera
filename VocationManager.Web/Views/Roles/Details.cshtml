@@ -1,7 +1,7 @@
 ﻿@using VocationManager.Services
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model VocationManager.Services.DTOs.Users.BaseUserDto
+@model VocationManager.Services.DTOs.Roles.RoleDto
 
 @{
     ViewData["Title"] = "Details";
@@ -17,34 +17,10 @@
         <div>
             <dl class="row">
                 <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.RoleName)
+                    @Html.DisplayNameFor(model => model.Name)
                 </dt>
                 <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.RoleName)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Username)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Username)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.FirstName)
-                </dd>
-                <dt class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.LastName)
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.LastName)
+                    @Html.DisplayFor(model => model.Name)
                 </dd>
             </dl>
         </div>
@@ -58,7 +34,7 @@
         {
             <a asp-action="Edit" asp-route-id="@Model.Id">
                 <button class="btn btn-warning">
-                    <i class="fas fa-user-edit"></i> Edit
+                    <i class="fas fa-edit"></i> Edit
                 </button>
             </a>
 
@@ -66,7 +42,7 @@
             {
                 <a asp-action="Delete" asp-route-id="@Model?.Id">
                     <button class="btn btn-danger">
-                        <i class="fas fa-user-times"></i> Delete
+                        <i class="fas fa-trash-alt"></i> Delete
                     </button>
                 </a>
             }

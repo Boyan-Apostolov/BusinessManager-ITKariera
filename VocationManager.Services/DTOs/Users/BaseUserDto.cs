@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using VocationManager.Data;
 
-namespace VocationManager.Services.DTOs
+namespace VocationManager.Services.DTOs.Users
 {
     public class BaseUserDto
     {
         public BaseUserDto()
         {
-            
+
         }
 
         public BaseUserDto(ApplicationUser domainUser)

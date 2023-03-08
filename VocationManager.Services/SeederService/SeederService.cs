@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using VocationManager.Data;
-using VocationManager.Services.DTOs;
+using VocationManager.Services.DTOs.Users;
 
 namespace VocationManager.Services.SeederService
 {

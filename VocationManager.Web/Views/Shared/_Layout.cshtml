@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VocationManager.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" asp-append-version="true" />
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -26,18 +27,31 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if(User.Identity.IsAuthenticated)
                         {
-                        <div class="dropdown">
-                            <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user m-1"></i> User actions
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user m-1"></i> Users
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index"> <i class="fas fa-users m-1"></i> All users</a>
-                                @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
-                                {
+                                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                                    {
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create"><i class="fas fa-user-plus m-1"></i> New user</a>
-                                }
-                            </ul>
-                        </div>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-fingerprint"></i> Roles
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index"> <i class="fa-solid fa-user-lock m-1"></i> All roles</a>
+                                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                                    {
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Create"> <i class="fa-solid fa-lock-open m-1"></i> New role</a>
+                                    }
+                                </ul>
+                            </div>
                         }
                         
                     </ul>

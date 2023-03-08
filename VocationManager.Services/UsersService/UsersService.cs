@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VocationManager.Data;
-using VocationManager.Services.DTOs;
+using VocationManager.Services.DTOs.Users;
 using VocationManager.Services.RolesService;
 
 namespace VocationManager.Services.UsersService

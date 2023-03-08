@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VocationManager.Services.DTOs
+namespace VocationManager.Services.DTOs.Users
 {
     public class PaginatedUsersCollectionDto
     {
