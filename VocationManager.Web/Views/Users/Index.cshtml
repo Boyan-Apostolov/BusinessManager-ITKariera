@@ -68,16 +68,3 @@ else
 {
     <h6>No users found!</h6>
 }
-@*
-                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
-                    {
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    }
-                    else if (User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead))) //TODO AND USER IS MEMBER OF HIS TEAM
-                    {
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    }
-
-*@

@@ -49,7 +49,7 @@ namespace VocationManager.Services.UsersService
         public async Task<PaginatedUsersCollectionDto> GetPaginatedAndFilteredUsers(int? page, int? pageSize, string keyword)
         {
             var users = await GetAllAsync();
-            var paginator = new Paginator(users.Count, page, pageSize, "Users");
+            var paginator = new Paginator(users.Count, page, pageSize, "Users", true);
 
             var paginatedUsers =
                 users
@@ -128,11 +128,11 @@ namespace VocationManager.Services.UsersService
             domainUser.NormalizedUserName = userDto.Username.Normalize();
 
             var currentRoleName = await _rolesService.GetRoleNameByUserId(userDto.Id);
-            if (currentRoleName != userDto.RoleName)
+            var newRole = await _rolesService.GetNameById(userDto.RoleName);
+
+            if (currentRoleName != newRole)
             {
                 await _userManager.RemoveFromRoleAsync(domainUser, currentRoleName);
-
-                var newRole = await _rolesService.GetNameById(userDto.RoleName);
                 await _userManager.AddToRoleAsync(domainUser, newRole);
             }
 

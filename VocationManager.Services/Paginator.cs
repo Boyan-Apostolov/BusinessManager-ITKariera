@@ -8,7 +8,7 @@ namespace VocationManager.Services
 {
     public class Paginator
     {
-        public Paginator(int totalItems, int? page, int? pageSize, string mainPath)
+        public Paginator(int totalItems, int? page, int? pageSize, string mainPath, bool includeSearchBar)
         {
             // calculate total, start and end pages
             var actualPageSize = pageSize ?? 10;
@@ -43,6 +43,7 @@ namespace VocationManager.Services
                 currentPage = totalPages;
             }
 
+            IncludeSearchBar = includeSearchBar;
             TotalItems = totalItems;
             CurrentPage = currentPage;
             PageSize = actualPageSize;
@@ -52,6 +53,7 @@ namespace VocationManager.Services
             MainPath = mainPath;
         }
 
+        public bool IncludeSearchBar { get; set; }
         public int TotalItems{ get; private set; }
 
         public int CurrentPage { get; private set; }

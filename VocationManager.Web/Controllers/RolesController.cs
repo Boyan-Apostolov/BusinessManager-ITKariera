@@ -16,12 +16,10 @@ namespace VocationManager.Web.Controllers
             _rolesService = rolesService;
         }
 
-        public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyword = null)
+        public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10)
         {
-            //var users = await _usersService.GetPaginatedAndFilteredUsers(page, pageSize, keyword);
-            var roles = await _rolesService.GetAllAsync();
-            var orderedRoles = roles.OrderByDescending(x => x.UsersCount).ToArray();
-            return View(orderedRoles);
+            var roles = await _rolesService.GetPaginatedRoles(page, pageSize);
+            return View(roles);
         }
 
         [Authorize(Roles = "CEO")]

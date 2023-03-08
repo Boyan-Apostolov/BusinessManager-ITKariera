@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Users;
+using PaginatedRolesCollectionDto = VocationManager.Services.DTOs.Roles.PaginatedRolesCollectionDto;
 
 namespace VocationManager.Services.RolesService
 {
@@ -23,5 +24,6 @@ namespace VocationManager.Services.RolesService
         Task EditAsync(BaseRoleDto roleDto);
         Task DeleteAsync(string roleId);
         Task<bool> RoleExists(string roleName);
+        Task<PaginatedRolesCollectionDto?> GetPaginatedRoles(int? page, int? pageSize);
     }
 }

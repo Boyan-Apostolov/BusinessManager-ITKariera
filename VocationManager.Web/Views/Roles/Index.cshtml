@@ -1,7 +1,7 @@
 ﻿@using VocationManager.Services
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model ICollection<VocationManager.Services.DTOs.Roles.RoleDto>
+@model VocationManager.Services.DTOs.Roles.PaginatedRolesCollectionDto
 
 @{
     ViewData["Title"] = "Index";
@@ -18,7 +18,6 @@
             </button>
         </a>
     </p>
-    @*@await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)*@
 
     <div class="card rounded-0">
         <h3 class="card-header h5 rounded-0">
@@ -26,7 +25,7 @@
         </h3>
         <div class="card-block">
             <ul class="list-group">
-                @foreach (var roleDto in Model)
+                @foreach (var roleDto in Model.Roles.OrderByDescending(r => r.UsersCount))
                 {
                     <li class="list-group-item d-flex @(index % 2 == 0 ? "bg-white" : "bg-light") justify-content-between align-items-center">
                         <div class="col-10 d-flex justify-content-between align-items-center m-2">
@@ -62,6 +61,8 @@
             </ul>
         </div>
     </div>
+
+    @await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
 }
 else
 {

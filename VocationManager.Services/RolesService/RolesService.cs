@@ -160,5 +160,23 @@ namespace VocationManager.Services.RolesService
             => await _dbContext
                 .Roles
                 .AnyAsync(r => r.Name == roleName);
+
+        public async Task<PaginatedRolesCollectionDto?> GetPaginatedRoles(int? page, int? pageSize)
+        {
+            var roles = await GetAllAsync();
+            var paginator = new Paginator(roles.Count, page, pageSize, "Roles", false);
+
+            var paginatedRoles =
+                roles
+                    .OrderByDescending(r => r.UsersCount)
+                    .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
+                    .Take(paginator.PageSize);
+
+            return new PaginatedRolesCollectionDto()
+            {
+                Roles = paginatedRoles.ToList(),
+                Paginator = paginator
+            };
+        }
     }
 }
