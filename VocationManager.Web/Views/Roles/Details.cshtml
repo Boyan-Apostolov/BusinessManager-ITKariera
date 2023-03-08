@@ -10,10 +10,10 @@
 
 <div class="card light-shadow m-0 m-auto col-5">
     <div class="img-fluid text-center mt-1">
-        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Person image">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="/images/user_lock.png" alt="Person image">
     </div>
     <div class="card-body">
-        <h5 class="card-title">User details</h5>
+        <h5 class="card-title">Role details:</h5>
         <div>
             <dl class="row">
                 <dt class="col-sm-3">
@@ -24,13 +24,29 @@
                 </dd>
             </dl>
         </div>
+        <hr/>
+        
+        <h5>Users with role '@Model.Name':</h5>
+        @foreach (var user in ViewBag.UserWithSelectedRole)
+        {
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="m-2">@(user.FirstName) @(user.LastName)</span>
+                
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-info-circle"></i> More info
+                    </button>
+                </a>
+            </div>
+        }
+        <br/>
         <a asp-action="Index" >
             <button class="btn btn-primary">
                 <i class="fas fa-backward"></i> Back to List
             </button>
         </a>
 
-        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) && Model.Name != "CEO")
         {
             <a asp-action="Edit" asp-route-id="@Model.Id">
                 <button class="btn btn-warning">

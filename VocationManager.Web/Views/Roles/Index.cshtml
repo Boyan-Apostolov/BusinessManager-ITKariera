@@ -42,17 +42,20 @@
                                     </button>
                                 </a>
 
-                                <a asp-action="Edit" asp-route-id="@roleDto.Id">
-                                    <button class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                </a>
+                                @if (roleDto.Name != "CEO")
+                                {
+                                    <a asp-action="Edit" asp-route-id="@roleDto.Id">
+                                        <button class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </a>
 
-                                <a asp-action="Delete" asp-route-id="@roleDto?.Id">
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Delete
-                                    </button>
-                                </a>
+                                    <a asp-action="Delete" asp-route-id="@roleDto?.Id">
+                                        <button class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </a>
+                                }
                             </div>
                         }
                     </li>

@@ -31,6 +31,7 @@ namespace VocationManager.Web.Controllers
                 return NotFound();
             }
 
+            ViewBag.UserWithSelectedRole = await _rolesService.GetUsersByRoleId(id);
             return View(role);
         }
 

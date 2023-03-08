@@ -18,12 +18,19 @@ namespace VocationManager.Services.RolesService
         IEnumerable<KeyValuePair<string, string>> GetAllAsKeyValuePairs();
 
         Task<ICollection<RoleDto>> GetAllAsync();
-        //Task<BaseRoleDto> GetPaginatedAndFilteredUsers(int? page, int? pageSize, string keyword);
+        
         Task<RoleDto?> GetByIdAsync(string roleId, bool disableTracking = true);
+        
         Task CreateAsync(BaseRoleDto roleDto);
+        
         Task EditAsync(BaseRoleDto roleDto);
+        
         Task DeleteAsync(string roleId);
+        
         Task<bool> RoleExists(string roleName);
+
         Task<PaginatedRolesCollectionDto?> GetPaginatedRoles(int? page, int? pageSize);
+
+        Task<ICollection<BaseUserDto>> GetUsersByRoleId(string roleId);
     }
 }
