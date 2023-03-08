@@ -117,6 +117,7 @@ namespace VocationManager.Services.UsersService
             var domainUser = await _dbContext
                 .ApplicationUsers
                 .FirstOrDefaultAsync(u => u.Id == userDto.Id);
+
             if (domainUser == null) return;
 
             domainUser.FirstName = userDto.FirstName;
@@ -125,6 +126,15 @@ namespace VocationManager.Services.UsersService
             domainUser.NormalizedEmail = userDto.Email.Normalize();
             domainUser.UserName = userDto.Username;
             domainUser.NormalizedUserName = userDto.Username.Normalize();
+
+            var currentRoleName = await _rolesService.GetRoleNameByUserId(userDto.Id);
+            if (currentRoleName != userDto.RoleName)
+            {
+                await _userManager.RemoveFromRoleAsync(domainUser, currentRoleName);
+
+                var newRole = await _rolesService.GetNameById(userDto.RoleName);
+                await _userManager.AddToRoleAsync(domainUser, newRole);
+            }
 
             await _dbContext.SaveChangesAsync();
         }

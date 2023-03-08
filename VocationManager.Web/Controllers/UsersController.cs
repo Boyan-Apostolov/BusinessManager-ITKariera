@@ -88,6 +88,7 @@ namespace VocationManager.Controllers
                 return NotFound();
             }
 
+            ViewBag.AvailableRoles = _rolesService.GetAllAsKeyValuePairs();
             return View(user);
         }
 
@@ -107,6 +108,7 @@ namespace VocationManager.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.AvailableRoles = _rolesService.GetAllAsKeyValuePairs();
             return View(userDto);
         }
 

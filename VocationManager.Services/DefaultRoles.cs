@@ -2,9 +2,9 @@
 {
     public enum DefaultRoles
     {
-        Unassigned = 0,
-        CEO = 1,
-        Developer = 2,
-        Team_Lead = 3,
+        CEO = 0,
+        Developer = 1,
+        Team_Lead = 2,
+        Unassigned = 3,
     }
 }

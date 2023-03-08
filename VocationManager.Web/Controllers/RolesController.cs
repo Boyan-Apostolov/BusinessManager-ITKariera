@@ -7,7 +7,6 @@ using VocationManager.Services.RolesService;
 
 namespace VocationManager.Web.Controllers
 {
-    [Authorize(Roles = "CEO")]
     public class RolesController : Controller
     {
         private readonly IRolesService _rolesService;
@@ -16,6 +15,7 @@ namespace VocationManager.Web.Controllers
         {
             _rolesService = rolesService;
         }
+
         public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyword = null)
         {
             //var users = await _usersService.GetPaginatedAndFilteredUsers(page, pageSize, keyword);
@@ -24,6 +24,7 @@ namespace VocationManager.Web.Controllers
             return View(orderedRoles);
         }
 
+        [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Details(string id)
         {
             var role = await _rolesService.GetByIdAsync(id);
@@ -35,6 +36,7 @@ namespace VocationManager.Web.Controllers
             return View(role);
         }
 
+        [Authorize(Roles = "CEO")]
         public IActionResult Create()
         {
             return View();
@@ -42,6 +44,7 @@ namespace VocationManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Create(BaseRoleDto roleDto)
         {
             if (ModelState.IsValid)
@@ -67,6 +70,7 @@ namespace VocationManager.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Edit(string id)
         {
             var role = await _rolesService.GetByIdAsync(id);
@@ -112,6 +116,7 @@ namespace VocationManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "CEO")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             await _rolesService.DeleteAsync(id);

@@ -3,6 +3,9 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var roles = ((IEnumerable<KeyValuePair<string, string>>)this.ViewBag.AvailableRoles).Select(x => new SelectListItem(x.Value, x.Key.ToString()));
+    var currentRole = roles.FirstOrDefault(r => r.Text == Model.RoleName);
+    var unpickedRoles = roles.Where(r => r.Text != Model.RoleName);
 }
 
 <div class="card light-shadow m-0 m-auto col-5">
@@ -15,7 +18,6 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="RoleName" />
                 <div class="form-group">
                     <label asp-for="Username" class="control-label"></label>
                     <input asp-for="Username" class="form-control" />
@@ -35,6 +37,12 @@
                     <label asp-for="LastName" class="control-label"></label>
                     <input asp-for="LastName" class="form-control" />
                     <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RoleName" class="control-label">Role</label>
+                    <select asp-for="RoleName" class="form-control form-control-lg" asp-items="unpickedRoles">
+                        <option value="@currentRole?.Value" selected="">@currentRole?.Text</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <br/>
