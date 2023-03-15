@@ -100,10 +100,21 @@ namespace VocationManager.Services.ProjectsService
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<PaginatedProjectsCollectionDto?> GetPaginatedProjects(int? page, int? pageSize)
+        public async Task<PaginatedProjectsCollectionDto?> GetPaginatedProjects(int? page, int? pageSize, string keyword)
         {
             var projects = await GetAllAsync();
             var paginator = new Paginator(projects.Count, page, pageSize, "Projects", true);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                keyword = keyword.Trim();
+                projects = projects
+                    .Where(u => u.Name.Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.Description.Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.Status.ToString().Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.Priority.ToString().Contains(keyword, StringComparison.InvariantCultureIgnoreCase))
+                    .ToArray();
+            }
 
             var paginatedProjects =
                 projects

@@ -21,7 +21,7 @@ namespace VocationManager.Web.Controllers
 
         public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyword = "")
         {
-            var projects = await _projectsService.GetPaginatedProjects(page, pageSize);
+            var projects = await _projectsService.GetPaginatedProjects(page, pageSize, keyword);
             return View(projects);
         }
         

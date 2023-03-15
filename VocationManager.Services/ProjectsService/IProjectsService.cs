@@ -17,7 +17,7 @@ namespace VocationManager.Services.ProjectsService
         
         Task DeleteAsync(int projectId);
         
-        Task<PaginatedProjectsCollectionDto?> GetPaginatedProjects(int? page, int? pageSize);
+        Task<PaginatedProjectsCollectionDto?> GetPaginatedProjects(int? page, int? pageSize, string keyword);
 
         IEnumerable<KeyValuePair<string, string>> GetAllEnumValuesAsKeyValuePairs<T>();
     }

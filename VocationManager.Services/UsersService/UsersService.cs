@@ -51,21 +51,22 @@ namespace VocationManager.Services.UsersService
             var users = await GetAllAsync();
             var paginator = new Paginator(users.Count, page, pageSize, "Users", true);
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                keyword = keyword.Trim();
+                users = users
+                    .Where(u => u.Username.Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.FirstName.Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.LastName.Contains(keyword, StringComparison.InvariantCultureIgnoreCase)
+                                || u.RoleName.Contains(keyword, StringComparison.InvariantCultureIgnoreCase))
+                    .ToArray();
+            }
+
             var paginatedUsers =
                 users
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
                     .Take(paginator.PageSize);
-
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                keyword = keyword.Trim();
-                paginatedUsers = paginatedUsers
-                    .Where(u => u.Username.Contains(keyword)
-                                || u.FirstName.Contains(keyword)
-                                || u.LastName.Contains(keyword)
-                                || u.RoleName.Contains(keyword))
-                    .AsEnumerable();
-            }
+            
             return new PaginatedUsersCollectionDto()
             {
                 Users = paginatedUsers.ToList(),
