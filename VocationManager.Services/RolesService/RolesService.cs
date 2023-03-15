@@ -99,7 +99,7 @@ namespace VocationManager.Services.RolesService
         {
             var rolesQueryable = _dbContext
                 .Roles
-                .AsNoTracking();
+                .AsQueryable();
             if (disableTracking)
             {
                 rolesQueryable = rolesQueryable.AsNoTracking();

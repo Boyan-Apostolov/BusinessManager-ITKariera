@@ -3,6 +3,7 @@ using GlobalConstants.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
+using VocationManager.Services.ProjectsService;
 using VocationManager.Services.RolesService;
 using VocationManager.Services.SeederService;
 using VocationManager.Services.UsersService;
@@ -44,6 +45,7 @@ namespace VocationManager
             builder.Services.AddTransient<ISeederService, SeederService>();
             builder.Services.AddTransient<IUsersService, UsersService>();
             builder.Services.AddTransient<IRolesService, RolesService>();
+            builder.Services.AddTransient<IProjectsService, ProjectsService>();
 
             var app = builder.Build();
 

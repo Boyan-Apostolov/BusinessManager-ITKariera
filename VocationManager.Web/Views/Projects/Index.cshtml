@@ -1,0 +1,66 @@
+﻿@using VocationManager.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using VocationManager.Data
+@model VocationManager.Services.DTOs.Projects.PaginatedProjectsCollectionDto?
+
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Projects</h1>
+
+@if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+{
+    <p>
+        <a asp-action="Create">
+            <button class="btn btn-success">
+                <i class="fa-solid fa-plus m-1"></i> New project
+            </button>
+        </a>
+    </p>
+
+    <div>
+        <label class="col-4 m-1">Project name:</label>
+        <label class="col-4 m-1">Project status:</label>
+        @foreach (var projectDto in Model.Projects)
+        {
+            <div class="w-100 d-flex align-items-center bg-white m-1 p-3 rounded-3 light-shadow">
+                <div class="d-inline-flex flex-column w-25">
+                    <strong>@projectDto.Name</strong>
+                    <span>@projectDto.Description.Substring(0, projectDto.Description.Length < 50 ? projectDto.Description.Length : 50)...</span>
+                </div>
+                <div class="d-inline-flex justify-content-center w-25">
+                    @switch (@projectDto.Status)
+                    {
+                        case ProjectStatusType.Not_Started:
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fas fa-spinner"></i> Not started
+                            </button>
+                            break;
+                        case ProjectStatusType.In_Progress:
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-tools"></i> In Progress
+                            </button>
+                            break;
+                        case ProjectStatusType.Completed:
+                            <button class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i> Completed
+                            </button>
+                            break;
+                        case ProjectStatusType.Canceled:
+                            <button class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i> Canceled
+                            </button>
+                            break;
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
+}
+else
+{
+    <h6>No Roles found!</h6>
+}

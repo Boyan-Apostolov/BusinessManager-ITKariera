@@ -12,5 +12,6 @@ namespace VocationManager.Data
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Project> Projects { get; set; }
     }
 }

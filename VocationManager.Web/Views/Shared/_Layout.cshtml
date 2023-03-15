@@ -52,6 +52,19 @@
                                     }
                                 </ul>
                             </div>
+
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-project-diagram"></i> Projects
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index"> <i class="fa-solid fa-list m-1"></i> All projects</a>
+                                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+                                    {
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Create"> <i class="fa-solid fa-plus m-1"></i> New project</a>
+                                    }
+                                </ul>
+                            </div>
                         }
                         
                     </ul>

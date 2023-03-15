@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using VocationManager.Data;
+using VocationManager.Services.DTOs.Projects;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Users;
 
@@ -24,6 +25,10 @@ namespace GlobalConstants.Mappings
             CreateMap<IdentityRole, RoleDto>();
             CreateMap<RoleDto, BaseRoleDto>();
             CreateMap<BaseRoleDto, RoleDto>();
+
+            CreateMap<Project, ProjectDto>();
+            CreateMap<ProjectDto, Project>();
+            CreateMap<CreateProjectDto, Project>();
         }
     }
 }

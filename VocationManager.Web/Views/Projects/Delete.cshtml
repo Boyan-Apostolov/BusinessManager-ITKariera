@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model VocationManager.Services.DTOs.Projects.ProjectDto?
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="card light-shadow m-0 m-auto col-5">
+    <div class="img-fluid text-center mt-1">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn4.iconfinder.com/data/icons/bookmarks-and-tags/128/Bookmark__Tags_Delete_tag-512.png" alt="delete image">
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Are you sure you want to delete this role?</h5>
+        <div>
+            <dl class="row">
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+                
+                <dt class = "col-sm-3">
+                    @Html.DisplayNameFor(model => model.Status)
+                </dt>
+                <dd class = "col-sm-9">
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+            </dl>
+    
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+        
+                <a asp-action="Index" >
+                    <button class="btn btn-primary" type="button">
+                        <i class="fas fa-backward"></i> Back to List
+                    </button>
+                </a>
+
+                <input type="submit" value="Delete" class="btn btn-danger" />
+            </form>
+        </div>
+    </div>
+</div>
