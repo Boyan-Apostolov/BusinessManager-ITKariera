@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VocationManager.Data;
 using VocationManager.Services.DTOs.Projects;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Users;
@@ -38,6 +39,8 @@ namespace VocationManager.Web.Controllers
         [Authorize(Roles = "CEO,Team_Lead")]
         public IActionResult Create()
         {
+            ViewBag.AvailableStatuses = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectStatusType>();
+            ViewBag.AvailablePriorities = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectPriority>();
             return View();
         }
 
@@ -60,6 +63,8 @@ namespace VocationManager.Web.Controllers
 
             if (ModelState.ErrorCount != 0)
             {
+                ViewBag.AvailableStatuses = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectStatusType>();
+                ViewBag.AvailablePriorities = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectPriority>();
                 return View(projectDto);
             }
 
@@ -75,6 +80,8 @@ namespace VocationManager.Web.Controllers
                 return NotFound();
             }
 
+            ViewBag.AvailableStatuses = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectStatusType>();
+            ViewBag.AvailablePriorities = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectPriority>();
             return View(project);
         }
 

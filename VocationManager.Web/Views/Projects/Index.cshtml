@@ -20,16 +20,18 @@
     </p>
 
     <div>
-        <label class="col-4 m-1">Project name:</label>
-        <label class="col-4 m-1">Project status:</label>
+        <label class="col-2 m-1">Project name:</label>
+        <label class="col-3 text-end">Project status:</label>
+        <label class="col-3 text-end" style="padding-right: 35px">Priority:</label>
+        <label class="col-3 text-center">Actions:</label>
         @foreach (var projectDto in Model.Projects)
         {
             <div class="w-100 d-flex align-items-center bg-white m-1 p-3 rounded-3 light-shadow">
-                <div class="d-inline-flex flex-column w-25">
+                <div class="d-inline-flex flex-column col-3">
                     <strong>@projectDto.Name</strong>
                     <span>@projectDto.Description.Substring(0, projectDto.Description.Length < 50 ? projectDto.Description.Length : 50)...</span>
                 </div>
-                <div class="d-inline-flex justify-content-center w-25">
+                <div class="d-inline-flex justify-content-center col-3">
                     @switch (@projectDto.Status)
                     {
                         case ProjectStatusType.Not_Started:
@@ -52,6 +54,53 @@
                                 <i class="fas fa-times"></i> Canceled
                             </button>
                             break;
+                    }
+                </div>
+                <div class="d-inline-flex justify-content-center col-3">
+                    @switch (@projectDto.Priority)
+                    {
+                        case ProjectPriority.Low:
+                            <span class="badge badge-secondary bg-secondary">
+                                Low
+                            </span>
+                            break;
+                        case ProjectPriority.Normal:
+                            <span class="badge badge-primary bg-primary">
+                                Normal
+                            </span>
+                            break;
+                        case ProjectPriority.High:
+                            <span class="badge badge-warning bg-warning">
+                                <i class="fas fa-tachometer-average"></i> High
+                            </span>
+                            break;
+                        case ProjectPriority.Urgent:
+                            <span class="badge badge-danger bg-danger">
+                                <i class="fas fa-tachometer-fast"></i> Urgent
+                            </span>
+                            break;
+                    }
+                </div>
+                <div>
+                    <a asp-action="Details" asp-route-id="@projectDto.Id" class="mb-1">
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-info-circle"></i> Info
+                        </button>
+                    </a>
+
+                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                    {
+                        <a asp-action="Edit" asp-route-id="@projectDto.Id">
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@projectDto?.Id">
+                            <button class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </a>
                     }
                 </div>
             </div>

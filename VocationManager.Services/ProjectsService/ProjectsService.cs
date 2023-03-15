@@ -81,6 +81,7 @@ namespace VocationManager.Services.ProjectsService
             foundProject.Name = projectDto.Name;
             foundProject.Description = projectDto.Description;
             foundProject.Status = projectDto.Status;
+            foundProject.Priority = projectDto.Priority;
 
 
             await _dbContext.SaveChangesAsync();
@@ -114,6 +115,17 @@ namespace VocationManager.Services.ProjectsService
                 Projects = paginatedProjects.ToList(),
                 Paginator = paginator
             };
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetAllEnumValuesAsKeyValuePairs<T>()
+        {
+            var kvps = new List<KeyValuePair<string, string>>();
+            foreach (var statusName in Enum.GetNames(typeof(T)))
+            {
+                kvps.Add(new KeyValuePair<string, string>(statusName, statusName));
+            }
+
+            return kvps;
         }
     }
 }

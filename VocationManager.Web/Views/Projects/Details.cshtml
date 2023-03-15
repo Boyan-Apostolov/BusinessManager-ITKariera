@@ -10,10 +10,10 @@
 
 <div class="card light-shadow m-0 m-auto col-5">
     <div class="img-fluid text-center mt-1">
-        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="/images/user_lock.png" alt="Person image">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" alt="Person image">
     </div>
     <div class="card-body">
-        <h5 class="card-title">Role details:</h5>
+        <h5 class="card-title">Project details:</h5>
         <div>
             <dl class="row">
                 <dt class="col-sm-3">
@@ -36,25 +36,18 @@
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.Status)
                 </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Priority)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Priority)
+                </dd>
             </dl>
         </div>
         <hr/>
         
-        <@*h5>Users with role '@Model.Name':</h5>
-        @foreach (var user in ViewBag.UserWithSelectedRole)
-        {
-            <div class="d-flex align-items-center justify-content-between">
-                <span class="m-2">@(user.FirstName) @(user.LastName)</span>
-                
-                <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-info-circle"></i> More info
-                    </button>
-                </a>
-            </div>
-        }*@
         <br/>
-        <a asp-action="Index" >
+        <a asp-action="Index">
             <button class="btn btn-primary">
                 <i class="fas fa-backward"></i> Back to List
             </button>

@@ -14,5 +14,6 @@ namespace VocationManager.Data
         public string Description { get; set; }
         public string Name { get; set; }
         public ProjectStatusType Status { get; set; }
+        public ProjectPriority Priority { get; set; }
     }
 }
