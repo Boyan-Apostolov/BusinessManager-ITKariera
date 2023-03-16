@@ -1,0 +1,70 @@
+﻿@using VocationManager.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model VocationManager.Services.DTOs.Teams.PaginatedTeamsCollectionDto?
+
+@{
+    ViewData["Title"] = "Index";
+    var index = 0;
+}
+<h1>Teams</h1>
+
+@if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+{
+    <p>
+        <a asp-action="Create">
+            <button class="btn btn-success">
+                <i class="fa-solid fa-plus"></i> New Team
+            </button>
+        </a>
+    </p>
+}
+
+@if (Model.Teams.Any())
+{
+    <div class="card rounded-0">
+
+        <div class="card-block">
+            <ul class="list-group">
+                @foreach (var teamDto in Model.Teams)
+                {
+                    <li class="list-group-item d-flex @(index % 2 == 0 ? "bg-white" : "bg-light") justify-content-between align-items-center">
+                        <div class="col-10 d-flex justify-content-between align-items-center m-2">
+                            @(teamDto.Name)
+                        </div>
+
+                        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+                        {
+                            <div class="col-2">
+                                <a asp-action="Details" asp-route-id="@teamDto.Id" class="mb-1">
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fas fa-info-circle"></i> Info
+                                    </button>
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@teamDto.Id">
+                                    <button class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@teamDto?.Id">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </a>
+                            </div>
+                        }
+                    </li>
+                    index++;
+                }
+            </ul>
+        </div>
+    </div>
+}
+else
+{
+    <h6>No Teams found!</h6>
+}
+
+@await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)

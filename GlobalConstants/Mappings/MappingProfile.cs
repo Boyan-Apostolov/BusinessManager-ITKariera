@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using VocationManager.Data;
 using VocationManager.Services.DTOs.Projects;
 using VocationManager.Services.DTOs.Roles;
+using VocationManager.Services.DTOs.Teams;
 using VocationManager.Services.DTOs.Users;
 
 namespace GlobalConstants.Mappings
@@ -29,6 +30,10 @@ namespace GlobalConstants.Mappings
             CreateMap<Project, ProjectDto>();
             CreateMap<ProjectDto, Project>();
             CreateMap<CreateProjectDto, Project>();
+
+            CreateMap<Team, TeamDto>();
+            CreateMap<TeamDto, Team>();
+            CreateMap<CreateTeamDto, Team>();
         }
     }
 }

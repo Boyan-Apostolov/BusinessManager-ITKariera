@@ -6,6 +6,7 @@ using VocationManager.Data;
 using VocationManager.Services.ProjectsService;
 using VocationManager.Services.RolesService;
 using VocationManager.Services.SeederService;
+using VocationManager.Services.TeamsService;
 using VocationManager.Services.UsersService;
 
 namespace VocationManager
@@ -46,6 +47,7 @@ namespace VocationManager
             builder.Services.AddTransient<IUsersService, UsersService>();
             builder.Services.AddTransient<IRolesService, RolesService>();
             builder.Services.AddTransient<IProjectsService, ProjectsService>();
+            builder.Services.AddTransient<ITeamsService, TeamsService>();
 
             var app = builder.Build();
 
