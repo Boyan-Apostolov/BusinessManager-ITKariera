@@ -34,7 +34,6 @@ namespace VocationManager.Controllers
             return View(users);
         }
 
-        [Authorize(Roles = "CEO,Team_Lead")]
         public async Task<IActionResult> Details(string id)
         {
             var user = await _usersService.GetByIdAsync(id);

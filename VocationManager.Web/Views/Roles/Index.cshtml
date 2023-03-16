@@ -18,7 +18,10 @@
             </button>
         </a>
     </p>
+}
 
+@if (Model.Roles.Any())
+{
     <div class="card rounded-0">
         <h3 class="card-header h5 rounded-0">
             Role with associated users count
@@ -64,10 +67,10 @@
             </ul>
         </div>
     </div>
-
-    @await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
 }
 else
 {
     <h6>No Roles found!</h6>
 }
+
+@await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
