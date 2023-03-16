@@ -63,11 +63,15 @@ namespace VocationManager.Services.ProjectsService
             return _mapper.Map<ProjectDto>(project);
         }
 
-        public async Task CreateAsync(CreateProjectDto projectDto)
+        public async Task<int> CreateAsync(CreateProjectDto projectDto)
         {
-            await _dbContext.Projects.AddAsync(_mapper.Map<Project>(projectDto));
+            var projectToAdd = _mapper.Map<Project>(projectDto);
+
+            await _dbContext.Projects.AddAsync(projectToAdd);
 
             await _dbContext.SaveChangesAsync();
+
+            return projectToAdd.Id;
         }
 
         public async Task EditAsync(ProjectDto projectDto)

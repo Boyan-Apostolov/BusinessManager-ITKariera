@@ -49,11 +49,12 @@ namespace VocationManager.Web.Controllers
         [Authorize(Roles = "CEO,Team_Lead")]
         public async Task<IActionResult> Create(CreateProjectDto projectDto)
         {
+            var newProjectId = 0;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _projectsService.CreateAsync(projectDto);
+                    newProjectId = await _projectsService.CreateAsync(projectDto);
                 }
                 catch (Exception e)
                 {
@@ -68,7 +69,7 @@ namespace VocationManager.Web.Controllers
                 return View(projectDto);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = newProjectId });
         }
 
         [Authorize(Roles = "CEO,Team_Lead")]
@@ -98,7 +99,7 @@ namespace VocationManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 await _projectsService.EditAsync(projectDto);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = projectDto.Id });
             }
 
             return View(projectDto);

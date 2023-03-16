@@ -27,18 +27,27 @@
         <hr/>
         
         <h5>Users with role '@Model.Name':</h5>
-        @foreach (var user in ViewBag.UserWithSelectedRole)
+        @if (ViewBag.UserWithSelectedRole.Count != 0)
         {
-            <div class="d-flex align-items-center justify-content-between">
-                <span class="m-2">@(user.FirstName) @(user.LastName)</span>
+            @foreach (var user in ViewBag.UserWithSelectedRole)
+            {
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="m-2">@(user.FirstName) @(user.LastName)</span>
                 
-                <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-info-circle"></i> More info
-                    </button>
-                </a>
-            </div>
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-info-circle"></i> More info
+                        </button>
+                    </a>
+                </div>
+            }
         }
+        else
+        {
+            <span>(none)</span>
+            <br/>
+        }
+        
         <br/>
         <a asp-action="Index" >
             <button class="btn btn-primary">

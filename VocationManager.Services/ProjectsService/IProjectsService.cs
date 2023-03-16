@@ -11,7 +11,7 @@ namespace VocationManager.Services.ProjectsService
         
         Task<ProjectDto?> GetByIdAsync(int projectId, bool disableTracking = true);
         
-        Task CreateAsync(CreateProjectDto roleDto);
+        Task<int> CreateAsync(CreateProjectDto roleDto);
         
         Task EditAsync(ProjectDto roleDto);
         

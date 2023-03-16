@@ -62,14 +62,15 @@ namespace VocationManager.Services.TeamsService
             return _mapper.Map<TeamDto>(team);
         }
 
-        public async Task CreateAsync(CreateTeamDto teamDto)
+        public async Task<int> CreateAsync(CreateTeamDto teamDto)
         {
-            await _dbContext.Teams.AddAsync(new Team()
-            {
-                Name = teamDto.Name,
-            });
+            var newTeam = _mapper.Map<Team>(teamDto);
+
+            await _dbContext.Teams.AddAsync(newTeam);
 
             await _dbContext.SaveChangesAsync();
+
+            return newTeam.Id;
         }
 
         public async Task EditAsync(TeamDto teamDto)

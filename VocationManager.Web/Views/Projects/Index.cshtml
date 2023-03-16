@@ -32,7 +32,7 @@
             <div class="w-100 d-flex align-items-center bg-white m-1 p-3 rounded-3 light-shadow">
                 <div class="d-inline-flex flex-column col-3">
                     <strong>@projectDto.Name</strong>
-                    <span>@projectDto.Description.Substring(0, projectDto.Description.Length < 50 ? projectDto.Description.Length : 50)...</span>
+                    <span>@projectDto.Description.Substring(0, projectDto.Description.Length < 35 ? projectDto.Description.Length : 35)...</span>
                 </div>
                 <div class="d-inline-flex justify-content-center col-3">
                     @switch (@projectDto.Status)

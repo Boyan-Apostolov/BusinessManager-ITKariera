@@ -12,7 +12,7 @@ namespace VocationManager.Services.TeamsService
         Task<string?> GetNameById(int id);
         Task<ICollection<TeamDto>> GetAllAsync();
         Task<TeamDto?> GetByIdAsync(int teamId, bool disableTracking = true);
-        Task CreateAsync(CreateTeamDto teamDto);
+        Task<int> CreateAsync(CreateTeamDto teamDto);
         Task EditAsync(TeamDto teamDto);
         Task DeleteAsync(int teamId);
         Task<PaginatedTeamsCollectionDto?> GetPaginatedTeams(int? page, int? pageSize, string keyWord);

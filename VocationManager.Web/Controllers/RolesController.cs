@@ -46,6 +46,8 @@ namespace VocationManager.Web.Controllers
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Create(BaseRoleDto roleDto)
         {
+            var newRoleId = string.Empty;
+
             if (ModelState.IsValid)
             {
                 try
@@ -53,7 +55,7 @@ namespace VocationManager.Web.Controllers
                     var roleExists = await _rolesService.RoleExists(roleDto.Name);
                     if (roleExists) throw new InvalidOperationException("Role already exists!");
 
-                    await _rolesService.CreateAsync(roleDto);
+                    newRoleId = await _rolesService.CreateAsync(roleDto);
                 }
                 catch (Exception e)
                 {
@@ -66,7 +68,7 @@ namespace VocationManager.Web.Controllers
                 return View(roleDto);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = newRoleId });
         }
 
         [Authorize(Roles = "CEO")]
@@ -94,7 +96,7 @@ namespace VocationManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 await _rolesService.EditAsync(roleDto);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = roleDto.Id });
             }
 
             return View(roleDto);

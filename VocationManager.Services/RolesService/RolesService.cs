@@ -111,16 +111,20 @@ namespace VocationManager.Services.RolesService
             return _mapper.Map<RoleDto>(role);
         }
 
-        public async Task CreateAsync(BaseRoleDto roleDto)
+        public async Task<string> CreateAsync(BaseRoleDto roleDto)
         {
-            await _dbContext.Roles.AddAsync(new IdentityRole()
+            var identityRole = new IdentityRole()
             {
                 Name = roleDto.Name,
                 NormalizedName = roleDto.Name.Normalize(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
-            });
+            };
+
+            await _dbContext.Roles.AddAsync(identityRole);
 
             await _dbContext.SaveChangesAsync();
+
+            return identityRole.Id;
         }
 
         public async Task EditAsync(BaseRoleDto roleDto)

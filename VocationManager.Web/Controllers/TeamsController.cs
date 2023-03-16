@@ -45,11 +45,12 @@ namespace VocationManager.Web.Controllers
         [Authorize(Roles = "CEO,Team_Lead")]
         public async Task<IActionResult> Create(CreateTeamDto teamDto)
         {
+            var newTeamId = 0;
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _teamsService.CreateAsync(teamDto);
+                    newTeamId = await _teamsService.CreateAsync(teamDto);
                 }
                 catch (Exception e)
                 {
@@ -62,7 +63,7 @@ namespace VocationManager.Web.Controllers
                 return View(teamDto);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = newTeamId });
         }
 
         [Authorize(Roles = "CEO,Team_Lead")]
@@ -90,7 +91,7 @@ namespace VocationManager.Web.Controllers
             if (ModelState.IsValid)
             {
                 await _teamsService.EditAsync(teamDto);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = teamDto.Id });
             }
 
             return View(teamDto);

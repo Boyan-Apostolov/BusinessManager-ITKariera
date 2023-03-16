@@ -21,7 +21,7 @@ namespace VocationManager.Services.RolesService
         
         Task<RoleDto?> GetByIdAsync(string roleId, bool disableTracking = true);
         
-        Task CreateAsync(BaseRoleDto roleDto);
+        Task<string> CreateAsync(BaseRoleDto roleDto);
         
         Task EditAsync(BaseRoleDto roleDto);
         
