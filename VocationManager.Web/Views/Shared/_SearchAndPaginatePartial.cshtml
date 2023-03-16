@@ -55,17 +55,14 @@
 </div>
 
 <script>
-    //$(function() {
-    //    var selectedValueForSize = $("#size-selected-val");
-    //    var sizeFromUrl = window.location.href.split("pageSize=")[1] || 10;
-
-    //    selectedValueForSize.text(sizeFromUrl);
-    //    selectedValueForSize.val(sizeFromUrl);
-    //});
+    var controllerName = $("#main-path").val();
+    var lastSearchedKeywordForCurrentPage = localStorage[`${controllerName}-searchHistory`];
+    if (lastSearchedKeywordForCurrentPage) {
+        $("#keyword").val(lastSearchedKeywordForCurrentPage);
+    };
 
     $("#size").change(function () {
         var pageSize = $("#size").val();
-        var controllerName = $("#main-path").val();
         window.location.href = `/${controllerName}?page=1&pageSize=${pageSize}`;
     });
 
@@ -81,8 +78,9 @@
 
     function initiateSearch() {
         var keyword = $("#keyword").val();
-        var controllerName = $("#main-path").val();
         var pageSize = $("#size").val();
         window.location.href = `/${controllerName}?page=1&pageSize=${pageSize}&keyword=${keyword}`;
+
+        localStorage[`${controllerName}-searchHistory`] = keyword;
     }
 </script>
