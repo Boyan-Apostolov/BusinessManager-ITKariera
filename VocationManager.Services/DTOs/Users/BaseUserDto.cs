@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using VocationManager.Data;
+using VocationManager.Services.DTOs.Teams;
 
 namespace VocationManager.Services.DTOs.Users
 {
@@ -19,5 +20,7 @@ namespace VocationManager.Services.DTOs.Users
 
         [Display(Name = "Role")]
         public string RoleName { get; set; }
+        public TeamDto Team { get; set; }
+        public int? TeamId { get; set; }
     }
 }

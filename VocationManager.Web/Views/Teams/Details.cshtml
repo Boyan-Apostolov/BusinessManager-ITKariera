@@ -1,6 +1,7 @@
 ﻿@using VocationManager.Services
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using VocationManager.Data
 @model VocationManager.Services.DTOs.Teams.TeamDto
 
 @{
@@ -24,22 +25,78 @@
                 </dd>
             </dl>
         </div>
-        <hr />
-
         
-        @*  <h5>Users with role '@Model.Name':</h5>
-            @foreach (var user in ViewBag.UserWithSelectedRole)
+        <hr/>
+        <h5>Users in team '@Model.Name':</h5>
+        @if (Model.Users.Count != 0)
         {
-        <div class="d-flex align-items-center justify-content-between">
-        <span class="m-2">@(user.FirstName) @(user.LastName)</span>
+            @foreach (var user in Model.Users)
+            {
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="m-2">@(user.FirstName) @(user.LastName)</span>
+                
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-info-circle"></i> More info
+                        </button>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <span>(none)</span>
+            <br/>
+        }
 
-        <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
-        <button class="btn btn-sm btn-primary">
-        <i class="fas fa-info-circle"></i> More info
-        </button>
-        </a>
-        </div>
-        }*@
+
+        <hr />
+        <h5>Projects for team '@Model.Name':</h5>
+        @if (Model.Projects.Count != 0)
+        {
+            @foreach (var project in Model.Projects)
+            {
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="m-2">
+                        @(project.Name)
+                        @switch (project.Status)
+                        {
+                            case ProjectStatusType.Not_Started:
+                                <button class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-spinner"></i> Not started
+                                </button>
+                                break;
+                            case ProjectStatusType.In_Progress:
+                                <button class="btn btn-sm btn-warning">
+                                    <i class="fas fa-tools"></i> In Progress
+                                </button>
+                                break;
+                            case ProjectStatusType.Completed:
+                                <button class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Completed
+                                </button>
+                                break;
+                            case ProjectStatusType.Canceled:
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i> Canceled
+                                </button>
+                                break;
+                        }
+                    </span>
+
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@project.Id">
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-info-circle"></i> More info
+                        </button>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <span>(none)</span>
+            <br />
+        }
         <br />
         <a asp-action="Index">
             <button class="btn btn-primary">

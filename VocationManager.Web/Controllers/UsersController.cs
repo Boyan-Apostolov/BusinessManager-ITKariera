@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using VocationManager.Data;
 using VocationManager.Services.DTOs.Users;
 using VocationManager.Services.RolesService;
+using VocationManager.Services.TeamsService;
 using VocationManager.Services.UsersService;
 
 namespace VocationManager.Controllers
@@ -20,12 +21,14 @@ namespace VocationManager.Controllers
     {
         private readonly IUsersService _usersService;
         private readonly IRolesService _rolesService;
+        private readonly ITeamsService _teamsService;
 
         public UsersController(IUsersService usersService,
-            IRolesService rolesService)
+            IRolesService rolesService, ITeamsService teamsService)
         {
             _usersService = usersService;
             _rolesService = rolesService;
+            _teamsService = teamsService;
         }
 
         public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyword = null)
@@ -42,6 +45,7 @@ namespace VocationManager.Controllers
                 return NotFound();
             }
 
+            ViewBag.AvailableTeams = _teamsService.GetAllAsKeyValuePairs();
             return View(user);
         }
 
@@ -131,6 +135,13 @@ namespace VocationManager.Controllers
         {
             await _usersService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignUserToTeam(string userId, int teamId)
+        {
+            await _teamsService.AssignUserToTeam(userId, teamId);
+            return Ok(200);
         }
     }
 }

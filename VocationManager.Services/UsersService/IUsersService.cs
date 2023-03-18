@@ -12,7 +12,7 @@ namespace VocationManager.Services.UsersService
     {
         Task<ICollection<BaseUserDto>> GetAllAsync();
         Task<PaginatedUsersCollectionDto> GetPaginatedAndFilteredUsers(int? page, int? pageSize, string keyword);
-        Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true);
+        Task<BaseUserDto?> GetByIdAsync(string userId);
         Task CreateAsync(CreateUserDto userDto);
         Task EditAsync(BaseUserDto userDto);
         Task DeleteAsync(string userId);

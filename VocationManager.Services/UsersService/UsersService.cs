@@ -34,6 +34,7 @@ namespace VocationManager.Services.UsersService
         {
             var users = await _dbContext
                 .ApplicationUsers
+                .Include(u => u.Team)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -66,7 +67,7 @@ namespace VocationManager.Services.UsersService
                 users
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
                     .Take(paginator.PageSize);
-            
+
             return new PaginatedUsersCollectionDto()
             {
                 Users = paginatedUsers.ToList(),
@@ -74,17 +75,11 @@ namespace VocationManager.Services.UsersService
             };
         }
 
-        public async Task<BaseUserDto?> GetByIdAsync(string userId, bool disableTracking = true)
+        public async Task<BaseUserDto?> GetByIdAsync(string userId)
         {
-            var usersQueryable = _dbContext
-                    .ApplicationUsers
-                    .AsNoTracking();
-            if (disableTracking)
-            {
-                usersQueryable = usersQueryable.AsNoTracking();
-            }
-
-            var user = await usersQueryable
+            var user = await _dbContext
+                .ApplicationUsers
+                .Include(u => u.Team)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             var mappedUser = _mapper.Map<BaseUserDto>(user);
@@ -144,7 +139,7 @@ namespace VocationManager.Services.UsersService
         {
             var user = await _dbContext
                 .ApplicationUsers
-                .FirstOrDefaultAsync(u=>u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) return;
 
             _dbContext.Users.Remove(user);

@@ -30,7 +30,15 @@
                 {
                     <li class="list-group-item d-flex @(index % 2 == 0 ? "bg-white" : "bg-light") justify-content-between align-items-center">
                         <div class="col-10 d-flex justify-content-between align-items-center m-2">
-                            @(teamDto.Name)
+                            <span>
+                                <span class="m-2">@(teamDto.Name)</span>
+                                <span class="badge bg-secondary m-2">
+                                    @(teamDto.Users.Count) users
+                                </span>
+                                <span class="badge bg-success m-2">
+                                    @(teamDto.Projects.Count) projects
+                                </span>
+                            </span>
                         </div>
 
                         @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))

@@ -1,10 +1,10 @@
 ﻿@using VocationManager.Services
 @using System.Security.Claims
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model VocationManager.Services.DTOs.Users.BaseUserDto
 
 @{
     ViewData["Title"] = "Details";
+    var teamsData = ((IEnumerable<KeyValuePair<int, string>>)this.ViewBag.AvailableTeams).Select(td => $"{td.Key}+=+{td.Value}");
 }
 
 
@@ -12,6 +12,8 @@
     <div class="img-fluid text-center mt-1">
         <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Person image">
     </div>
+    <input type="hidden" class="available-teams" value="@string.Join("#", teamsData)" />
+    <input type="hidden" class="Id" value="@Model.Id" />
     <div class="card-body">
         <h5 class="card-title">User details</h5>
         <div>
@@ -46,13 +48,36 @@
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.LastName)
                 </dd>
+
+                <dt class="col-sm-3">
+                    @(Model.TeamId.HasValue ? @Html.DisplayNameFor(model => model.Team.Name) : "")
+                </dt>
+                <dd class="col-sm-9">
+                    @if (Model.TeamId.HasValue)
+                    {
+                        @Model.Team.Name;
+                        <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.TeamId">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-info-circle"></i> More info
+                            </button>
+                        </a>
+                    }
+                    
+                </dd>
             </dl>
         </div>
-        <a asp-action="Index" >
+        <a asp-action="Index">
             <button class="btn btn-primary">
                 <i class="fas fa-backward"></i> Back to List
             </button>
         </a>
+
+        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+        {
+            <button class="btn @(Model.TeamId.HasValue? "btn-warning" : "btn-info") assing-btn">
+                <i class="fa-solid fa-people-group"></i> @(Model.TeamId.HasValue ? "Change team" : "Assign to team")
+            </button>
+        }
 
         @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
         {
@@ -74,4 +99,71 @@
     </div>
 </div>
 
+<script>
+    var availableTeams = $('.available-teams').val();
+
+    var teamInputs = {};
+    if (!availableTeams.includes("#")) {
+        let teamTokens = availableTeams.split("+=+");
+        teamInputs[teamTokens[0]] = teamTokens[1];
+    } else {
+        for (var team of availableTeams.split("#")) {
+            let teamTokens = team.split("+=+");
+
+            teamInputs[teamTokens[0]] = teamTokens[1];
+        }
+    }
+
+
+    console.log(teamInputs);
+    $(".assing-btn").on("click", function () {
+        const { value: fruit } = Swal.fire({
+            title: 'Select a team',
+            input: 'select',
+            inputOptions: teamInputs,
+            inputPlaceholder: 'Select a team',
+            showCancelButton: true,
+            inputValidator: (value) => {
+
+                if (value == "") {
+                    return Swal.fire(
+                        'Error!',
+                        'Please choose a team!',
+                        'error'
+                    );
+                } else {
+                    return new Promise((resolve) => {
+                        var model = {
+                            userId: $(".Id").val(),
+                            teamId: value
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Users/AssignUserToTeam",
+                            data: model,
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire(
+                                    'Success!',
+                                    'User was successfully assigned to the team!',
+                                    'success'
+                                ).then(() => window.location.reload());
+                            },
+                            error: function (event, jqxhr, settings, thrownError) {
+                                if (event.status != 200) {
+                                    Swal.fire(
+                                        'Error!',
+                                        event.responseText.split(': ')[1].split("\r\n")[0],
+                                        'error'
+                                    );
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    });
+</script>
 

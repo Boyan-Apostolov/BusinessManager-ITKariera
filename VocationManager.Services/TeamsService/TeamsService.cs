@@ -10,6 +10,7 @@ using VocationManager.Data;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Teams;
 using VocationManager.Services.DTOs.Users;
+using VocationManager.Services.UsersService;
 
 namespace VocationManager.Services.TeamsService
 {
@@ -18,7 +19,8 @@ namespace VocationManager.Services.TeamsService
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public TeamsService(ApplicationDbContext dbContext, IMapper mapper)
+        public TeamsService(ApplicationDbContext dbContext,
+            IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -50,6 +52,8 @@ namespace VocationManager.Services.TeamsService
         {
             var teamsQueryable = _dbContext
                 .Teams
+                .Include(t => t.Projects)
+                .Include(t => t.Users)
                 .AsQueryable();
             if (disableTracking)
             {
@@ -114,6 +118,8 @@ namespace VocationManager.Services.TeamsService
 
             var paginatedTeams =
                 teams
+                    .OrderByDescending(t => t.Users.Count)
+                    .ThenByDescending(t => t.Projects.Count)
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
                     .Take(paginator.PageSize);
 
@@ -122,6 +128,48 @@ namespace VocationManager.Services.TeamsService
                 Teams = paginatedTeams.ToList(),
                 Paginator = paginator
             };
+        }
+
+        public IEnumerable<KeyValuePair<int, string>> GetAllAsKeyValuePairs()
+        {
+            return _dbContext
+                .Teams
+                .ToArray()
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                })
+                .OrderBy(x => x.Name)
+                .ToList().Select(x => new KeyValuePair<int, string>(x.Id, x.Name));
+        }
+
+        public async Task AssignUserToTeam(string userId, int teamId)
+        {
+            var team = await _dbContext
+                .Teams
+                .Include(t => t.Users)
+                .FirstOrDefaultAsync(t => t.Id == teamId);
+
+            if (team == null) throw new InvalidOperationException("Team not found!");
+
+            // ReSharper disable once SimplifyLinqExpressionUseAll
+            if (!team.Users.Any(u => u.Id == userId))
+            {
+                var user = await _dbContext
+                        .ApplicationUsers
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null) throw new InvalidOperationException("User not found!");
+
+                team.Users.Add(user);
+
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("User is already part of that team!");
+            }
         }
     }
 }

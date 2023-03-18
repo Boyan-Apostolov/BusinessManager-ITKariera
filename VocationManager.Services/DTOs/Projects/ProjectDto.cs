@@ -14,5 +14,7 @@ namespace VocationManager.Services.DTOs.Projects
         public string Name { get; set; }
         public ProjectStatusType Status { get; set; }
         public ProjectPriority Priority { get; set; }
+        public int? TeamId { get; set; }
+        public Team Team { get; set; }
     }
 }
