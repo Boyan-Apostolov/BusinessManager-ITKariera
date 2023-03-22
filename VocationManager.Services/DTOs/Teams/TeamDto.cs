@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VocationManager.Data;
+using VocationManager.Services.DTOs.Projects;
+using VocationManager.Services.DTOs.Users;
 
 namespace VocationManager.Services.DTOs.Teams
 {
@@ -12,8 +14,8 @@ namespace VocationManager.Services.DTOs.Teams
     {
         public TeamDto()
         {
-            Projects = new List<Project>();
-            Users = new List<ApplicationUser>();
+            Projects = new List<ProjectDto>();
+            Users = new List<BaseUserDto>();
         }
 
         public int Id { get; set; }
@@ -21,8 +23,8 @@ namespace VocationManager.Services.DTOs.Teams
         [Display(Name = "Team Name")]
         public string Name { get; set; }
 
-        public ICollection<Project> Projects { get; set; }
+        public ICollection<ProjectDto> Projects { get; set; }
 
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<BaseUserDto> Users { get; set; }
     }
 }

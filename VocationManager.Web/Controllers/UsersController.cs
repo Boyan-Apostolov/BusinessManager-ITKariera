@@ -100,6 +100,9 @@ namespace VocationManager.Controllers
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Edit(string id, BaseUserDto userDto)
         {
+            ModelState.Remove(nameof(BaseUserDto.Team));
+            ModelState.Remove(nameof(BaseUserDto.TeamId));
+
             if (id != userDto.Id)
             {
                 return NotFound();

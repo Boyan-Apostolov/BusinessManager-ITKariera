@@ -1,5 +1,6 @@
 ﻿@using VocationManager.Services
 @using System.Security.Claims
+@using GlobalConstants
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using VocationManager.Data
 @model VocationManager.Services.DTOs.Teams.TeamDto
@@ -25,16 +26,23 @@
                 </dd>
             </dl>
         </div>
-        
-        <hr/>
+
+        <hr />
         <h5>Users in team '@Model.Name':</h5>
         @if (Model.Users.Count != 0)
         {
             @foreach (var user in Model.Users)
             {
                 <div class="d-flex align-items-center justify-content-between">
-                    <span class="m-2">@(user.FirstName) @(user.LastName)</span>
-                
+                    <span class="m-2">
+                        @(user.FirstName)
+                        @(user.LastName)
+                        @if (user.RoleName.Contains(Enum.GetName(DefaultRoles.Team_Lead)))
+                        {
+                            <i class='fa-solid fa-crown text-warning' title='Leader'></i>
+                        }
+                    </span>
+
                     <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
                         <button class="btn btn-sm btn-primary">
                             <i class="fas fa-info-circle"></i> More info
@@ -46,7 +54,7 @@
         else
         {
             <span>(none)</span>
-            <br/>
+            <br />
         }
 
 

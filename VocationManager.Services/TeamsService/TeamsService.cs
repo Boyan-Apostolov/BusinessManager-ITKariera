@@ -10,6 +10,7 @@ using VocationManager.Data;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Teams;
 using VocationManager.Services.DTOs.Users;
+using VocationManager.Services.RolesService;
 using VocationManager.Services.UsersService;
 
 namespace VocationManager.Services.TeamsService
@@ -18,12 +19,14 @@ namespace VocationManager.Services.TeamsService
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IRolesService _rolesService;
 
         public TeamsService(ApplicationDbContext dbContext,
-            IMapper mapper)
+            IMapper mapper, IRolesService rolesService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _rolesService = rolesService;
         }
 
         public async Task<string?> GetNameById(int id)
@@ -63,7 +66,14 @@ namespace VocationManager.Services.TeamsService
             var team = await teamsQueryable
                 .FirstOrDefaultAsync(u => u.Id == teamId);
 
-            return _mapper.Map<TeamDto>(team);
+            var mappedTeam = _mapper.Map<TeamDto>(team);
+
+            foreach (var user in mappedTeam.Users)
+            {
+                user.RoleName = await _rolesService.GetRoleNameByUserId(user.Id);
+            }
+            
+            return mappedTeam;
         }
 
         public async Task<int> CreateAsync(CreateTeamDto teamDto)
