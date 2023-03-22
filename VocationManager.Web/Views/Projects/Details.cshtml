@@ -5,6 +5,8 @@
 
 @{
     ViewData["Title"] = "Details";
+    var teamsData = ((IEnumerable<KeyValuePair<int, string>>)this.ViewBag.AvailableTeams).Select(td => $"{td.Key}+=+{td.Value}");
+
 }
 
 
@@ -12,6 +14,8 @@
     <div class="img-fluid text-center mt-1">
         <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" alt="Person image">
     </div>
+    <input type="hidden" class="available-teams" value="@string.Join("#", teamsData)" />
+    <input type="hidden" class="Id" value="@Model.Id" />
     <div class="card-body">
         <h5 class="card-title">Project details:</h5>
         <div>
@@ -22,14 +26,14 @@
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.Name)
                 </dd>
-                
+
                 <dt class="col-sm-3">
                     @Html.DisplayNameFor(model => model.Description)
                 </dt>
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.Description)
                 </dd>
-                
+
                 <dt class="col-sm-3">
                     @Html.DisplayNameFor(model => model.Status)
                 </dt>
@@ -42,11 +46,27 @@
                 <dd class="col-sm-9">
                     @Html.DisplayFor(model => model.Priority)
                 </dd>
+                @if (Model.TeamId.HasValue)
+                {
+                    <dt class="col-sm-3">
+                        Owned By
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Model.Team.Name
+                    
+                        <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.Team.Id">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-info-circle"></i> More info
+                            </button>
+                        </a>
+                    </dd>
+                }
+               
             </dl>
         </div>
-        <hr/>
-        
-        <br/>
+        <hr />
+
+        <br />
         <a asp-action="Index">
             <button class="btn btn-primary">
                 <i class="fas fa-backward"></i> Back to List
@@ -55,6 +75,11 @@
 
         @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
         {
+
+            <button class="btn @(Model.TeamId.HasValue? "btn-warning" : "btn-info") assing-btn">
+                <i class="fa-solid fa-people-group"></i> @(Model.TeamId.HasValue ? "Change team" : "Assign to team")
+            </button>
+
             <a asp-action="Edit" asp-route-id="@Model.Id">
                 <button class="btn btn-warning">
                     <i class="fas fa-edit"></i> Edit
@@ -72,3 +97,70 @@
         }
     </div>
 </div>
+<script>
+    var availableTeams = $('.available-teams').val();
+
+    var teamInputs = {};
+    if (!availableTeams.includes("#")) {
+        let teamTokens = availableTeams.split("+=+");
+        teamInputs[teamTokens[0]] = teamTokens[1];
+    } else {
+        for (var team of availableTeams.split("#")) {
+            let teamTokens = team.split("+=+");
+
+            teamInputs[teamTokens[0]] = teamTokens[1];
+        }
+    }
+
+
+    console.log(teamInputs);
+    $(".assing-btn").on("click", function () {
+        const { value: fruit } = Swal.fire({
+            title: 'Select a team',
+            input: 'select',
+            inputOptions: teamInputs,
+            inputPlaceholder: 'Select a team',
+            showCancelButton: true,
+            inputValidator: (value) => {
+
+                if (value == "") {
+                    return Swal.fire(
+                        'Error!',
+                        'Please choose a team!',
+                        'error'
+                    );
+                } else {
+                    return new Promise((resolve) => {
+                        var model = {
+                            projectId: $(".Id").val(),
+                            teamId: value
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Projects/AssignProjectToTeam",
+                            data: model,
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire(
+                                    'Success!',
+                                    'The project was successfully assigned to the team!',
+                                    'success'
+                                ).then(() => window.location.reload());
+                            },
+                            error: function (event, jqxhr, settings, thrownError) {
+                                if (event.status != 200) {
+                                    Swal.fire(
+                                        'Error!',
+                                        event.responseText.split(': ')[1].split("\r\n")[0],
+                                        'error'
+                                    );
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    });
+</script>

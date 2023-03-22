@@ -14,6 +14,7 @@
     <div class="img-fluid text-center mt-1">
         <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn.pixabay.com/photo/2018/03/10/12/00/teamwork-3213924_960_720.jpg" alt="Person image">
     </div>
+    <input type="hidden" asp-for="Id" />
     <div class="card-body">
         <h5 class="card-title">Team details:</h5>
         <div>
@@ -41,13 +42,26 @@
                         {
                             <i class='fa-solid fa-crown text-warning' title='Leader'></i>
                         }
+                        else if (user.RoleName.Contains(Enum.GetName(DefaultRoles.Developer)))
+                        {
+                            <i class="fa-solid fa-code" title="Developer"></i>
+                        }
                     </span>
+                    
+                    <div class="control-buttons">
+                        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+                        {
+                            <button class="btn btn-danger remove-user btn-sm" title="Remove from team" data-user-id="@user.Id">
+                                <i class="fas fa-user-times"></i>
+                            </button>
+                        }
 
-                    <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
-                        <button class="btn btn-sm btn-primary">
-                            <i class="fas fa-info-circle"></i> More info
-                        </button>
-                    </a>
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@user.Id">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-info-circle"></i> More info
+                            </button>
+                        </a>
+                    </div>
                 </div>
             }
         }
@@ -92,7 +106,7 @@
                         }
                     </span>
 
-                    <a asp-controller="Users" asp-action="Details" asp-route-id="@project.Id">
+                    <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">
                         <button class="btn btn-sm btn-primary">
                             <i class="fas fa-info-circle"></i> More info
                         </button>
@@ -128,5 +142,47 @@
         }
     </div>
 </div>
+<script>
+    $('.remove-user').on("click",
+        function () {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You can always assign the user again from their Details page.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let model = {
+                        userId: $(this).attr('data-user-id'),
+                        teamId: $('#Id').val()
+                    };
 
-
+                    $.ajax({
+                        type: "POST",
+                        url: "/Users/RemoveUserFromTeam",
+                        data: model,
+                        dataType: "json",
+                        success: function (response) {
+                            Swal.fire(
+                                'Removed!',
+                                'User was removed from the team.',
+                                'success'
+                            ).then(() => window.location.reload());
+                        },
+                        error: function (event, jqxhr, settings, thrownError) {
+                            if (event.status != 200) {
+                                Swal.fire(
+                                    'Error!',
+                                    event.responseText.split(': ')[1].split("\r\n")[0],
+                                    'error'
+                                );
+                            }
+                        }
+                    });
+                }
+            });
+        });
+</script>

@@ -72,7 +72,7 @@ namespace VocationManager.Services.TeamsService
             {
                 user.RoleName = await _rolesService.GetRoleNameByUserId(user.Id);
             }
-            
+
             return mappedTeam;
         }
 
@@ -179,6 +179,62 @@ namespace VocationManager.Services.TeamsService
             else
             {
                 throw new InvalidOperationException("User is already part of that team!");
+            }
+        }
+
+        public async Task AssignProjectToTeam(int projectId, int teamId)
+        {
+            var team = await _dbContext
+                .Teams
+                .Include(t => t.Projects)
+                .FirstOrDefaultAsync(t => t.Id == teamId);
+
+            if (team == null) throw new InvalidOperationException("Team not found!");
+
+            // ReSharper disable once SimplifyLinqExpressionUseAll
+            if (!team.Projects.Any(u => u.Id == projectId))
+            {
+                var project = await _dbContext
+                    .Projects
+                    .FirstOrDefaultAsync(u => u.Id == projectId);
+
+                if (project == null) throw new InvalidOperationException("Project not found!");
+
+                team.Projects.Add(project);
+
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("Project is already assigned to that team!");
+            }
+        }
+
+        public async Task RemoveUserFromTeam(string userId, int teamId)
+        {
+            var team = await _dbContext
+                .Teams
+                .Include(t => t.Users)
+                .FirstOrDefaultAsync(t => t.Id == teamId);
+
+            if (team == null) throw new InvalidOperationException("Team not found!");
+
+            // ReSharper disable once SimplifyLinqExpressionUseAll
+            if (team.Users.Any(u => u.Id == userId))
+            {
+                var user = await _dbContext
+                    .ApplicationUsers
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user == null) throw new InvalidOperationException("User not found!");
+
+                team.Users.Remove(user);
+
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("User is not part of that team!");
             }
         }
     }

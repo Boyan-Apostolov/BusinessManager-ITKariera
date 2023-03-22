@@ -18,5 +18,7 @@ namespace VocationManager.Services.TeamsService
         Task<PaginatedTeamsCollectionDto?> GetPaginatedTeams(int? page, int? pageSize, string keyWord);
         IEnumerable<KeyValuePair<int, string>> GetAllAsKeyValuePairs();
         Task AssignUserToTeam(string userId, int teamId);
+        Task AssignProjectToTeam(int projectId, int teamId);
+        Task RemoveUserFromTeam(string userId, int teamId);
     }
 }

@@ -51,6 +51,7 @@ namespace VocationManager.Services.ProjectsService
         {
             var projectsQueryable = _dbContext
                 .Projects
+                .Include(p => p.Team)
                 .AsQueryable();
             if (disableTracking)
             {

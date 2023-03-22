@@ -7,16 +7,20 @@ using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Users;
 using VocationManager.Services.ProjectsService;
 using VocationManager.Services.RolesService;
+using VocationManager.Services.TeamsService;
 
 namespace VocationManager.Web.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly IProjectsService _projectsService;
+        private readonly ITeamsService _teamsService;
 
-        public ProjectsController(IProjectsService projectsService)
+        public ProjectsController(IProjectsService projectsService,
+            ITeamsService teamsService)
         {
             _projectsService = projectsService;
+            _teamsService = teamsService;
         }
 
         public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyword = "")
@@ -33,6 +37,7 @@ namespace VocationManager.Web.Controllers
                 return NotFound();
             }
 
+            ViewBag.AvailableTeams = _teamsService.GetAllAsKeyValuePairs();
             return View(project);
         }
 
@@ -91,6 +96,9 @@ namespace VocationManager.Web.Controllers
         [Authorize(Roles = "CEO,Team_Lead")]
         public async Task<IActionResult> Edit(int id, ProjectDto projectDto)
         {
+            ModelState.Remove(nameof(ProjectDto.Team));
+            ModelState.Remove(nameof(ProjectDto.TeamId));
+
             if (id != projectDto.Id)
             {
                 return NotFound();
@@ -102,6 +110,8 @@ namespace VocationManager.Web.Controllers
                 return RedirectToAction(nameof(Details), new { id = projectDto.Id });
             }
 
+            ViewBag.AvailableStatuses = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectStatusType>();
+            ViewBag.AvailablePriorities = _projectsService.GetAllEnumValuesAsKeyValuePairs<ProjectPriority>();
             return View(projectDto);
         }
 
@@ -125,6 +135,13 @@ namespace VocationManager.Web.Controllers
         {
             await _projectsService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignProjectToTeam(int projectId, int teamId)
+        {
+            await _teamsService.AssignProjectToTeam(projectId, teamId);
+            return Ok(200);
         }
     }
 }

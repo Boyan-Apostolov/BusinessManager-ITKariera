@@ -145,6 +145,13 @@ namespace VocationManager.Controllers
         {
             await _teamsService.AssignUserToTeam(userId, teamId);
             return Ok(200);
+        }    
+        
+        [HttpPost]
+        public async Task<IActionResult> RemoveUserFromTeam(string userId, int teamId)
+        {
+            await _teamsService.RemoveUserFromTeam(userId, teamId);
+            return Ok(200);
         }
     }
 }
