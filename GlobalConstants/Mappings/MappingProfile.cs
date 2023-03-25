@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using VacationManager.Models;
-using VocationManager.Data;
-using VocationManager.Services.DTOs.Projects;
-using VocationManager.Services.DTOs.Roles;
-using VocationManager.Services.DTOs.Teams;
-using VocationManager.Services.DTOs.TimeOffs;
-using VocationManager.Services.DTOs.Users;
+using BusinessManager.Data;
+using BusinessManager.Services.DTOs.Projects;
+using BusinessManager.Services.DTOs.Roles;
+using BusinessManager.Services.DTOs.Teams;
+using BusinessManager.Services.DTOs.TimeOffs;
+using BusinessManager.Services.DTOs.Users;
 
 namespace GlobalConstants.Mappings
 {

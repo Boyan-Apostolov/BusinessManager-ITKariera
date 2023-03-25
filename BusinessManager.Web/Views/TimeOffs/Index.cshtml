@@ -1,0 +1,170 @@
+﻿@using BusinessManager.Services
+@using BusinessManager.Data.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BusinessManager.Services.DTOs.TimeOffs.PaginatedTimeOffsCollectionDto?;
+
+@{
+    ViewData["Title"] = "Time-Off Requests";
+}
+<h1>@(ViewData["Title"])</h1>
+
+@if (Model.Requests.Any())
+{
+    <div>
+        @foreach (var requestDto in Model.Requests)
+        {
+            <div class="w-100 d-flex align-items-center bg-white m-1 p-3 rounded-3 light-shadow">
+                <div class="d-inline-flex flex-column col-3">
+                    <strong>Requested Dates: @($"{requestDto.From:dd/MM/yyyy}") - @(requestDto.To.HasValue ? $"{requestDto.To:dd/MM/yyyy}" : "-")</strong>
+                    <span>
+                        Requested by: @($"{requestDto.RequestedBy.FirstName} {requestDto.RequestedBy.LastName}")
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@requestDto.RequestedById" class="mb-1">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </a>
+                    </span>
+                </div>
+                <div class="d-inline-flex justify-content-center col-3">
+                    @if (requestDto.IsApproved.HasValue)
+                    {
+                        if (requestDto.IsApproved.Value)
+                        {
+                            <span class="badge bg-success m-2">
+                                <i class="fa-solid fa-person-circle-check"></i> Approved
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger m-2">
+                                <i class="fa-solid fa-xmark"></i> Declined
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary m-2">
+                            <i class="fa-solid fa-circle-notch"></i> Waiting
+                        </span>
+                    }
+                </div>
+                <div class="d-inline-flex justify-content-center col-3">
+                    <span class="badge bg-info m-2">
+                        Type of leave: @requestDto.Type.ToString()
+                    </span>
+                </div>
+                <div>
+                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+                    {
+                        @if (!requestDto.IsApproved.HasValue)
+                        {
+                            <button class="btn btn-sm btn-success approve-btn" data-request-id="@requestDto.Id">
+                                <i class="fa-solid fa-check"></i> Approve
+                            </button>
+
+                            <button class="btn btn-sm btn-danger decline-btn" data-request-id="@requestDto.Id">
+                                <i class="fa-solid fa-xmark"></i> Decline
+                            </button>
+                        }
+                    }
+
+                    @if (!requestDto.IsApproved.HasValue)
+                    {
+                        <a asp-action="Edit" asp-route-id="@requestDto.Id">
+                            <button class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </a>
+
+                        <button class="btn btn-sm btn-danger delete-btn" data-request-id="@requestDto.Id">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h3>No requests found!</h3>
+}
+
+@await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
+<script>
+    $('.approve-btn').on("click",
+        function () {
+            var requestId = $(this).attr('data-request-id');
+
+            Swal.fire({
+                title: 'Do you want to approve the time-off request?',
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                return updateRequestStatus("TimeOffs/ApproveRequest", requestId, 'Approved successfully!');
+            });
+        });
+
+    $('.decline-btn').on("click",
+        function () {
+            var requestId = $(this).attr('data-request-id');
+
+            Swal.fire({
+                title: 'Do you want to decline the time-off request?',
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+                
+                return updateRequestStatus("TimeOffs/DeclineRequest", requestId, 'Declined successfully!');
+            });
+        });
+
+    
+    $('.delete-btn').on("click",
+        function () {
+            var requestId = $(this).attr('data-request-id');
+
+            Swal.fire({
+                title: 'Do you want to delete the time-off request? This action cannot be undone!',
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                return updateRequestStatus("TimeOffs/Delete", requestId, 'Deleted successfully!');
+            });
+        });
+
+    function updateRequestStatus(endpoint, requestId, successMessage) {
+        return new Promise((resolve) => {
+            $.ajax({
+                type: "POST",
+                url: endpoint,
+                data: { id: requestId },
+                dataType: "json",
+                error: function (event, jqxhr, settings, thrownError) {
+                    if (event.status != 200) {
+                        Swal.fire(
+                            'Error!',
+                            event.responseText.split(': ')[1].split("\r\n")[0],
+                            'error'
+                        );
+                    } else {
+                        Swal.fire(
+                            'Success!',
+                            successMessage,
+                            'success'
+                        ).then(() => window.location.reload());
+                    }
+                }
+            });
+        });
+    }
+
+</script>

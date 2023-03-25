@@ -1,0 +1,113 @@
+﻿@using BusinessManager.Services
+@using System.Security.Claims
+@model BusinessManager.Services.DTOs.Users.BaseUserDto
+
+@{
+    ViewData["Title"] = "Details";
+    var teamsData = ((IEnumerable<KeyValuePair<int, string>>)this.ViewBag.AvailableTeams).Select(td => $"{td.Key}+=+{td.Value}");
+}
+
+
+<div class="card light-shadow m-0 m-auto col-5">
+    <div class="img-fluid text-center mt-1">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Person image">
+    </div>
+    <input type="hidden" class="available-teams" value="@string.Join("#", teamsData)" />
+    <input type="hidden" class="Id" value="@Model.Id" />
+    <div class="card-body">
+        <h5 class="card-title">User details</h5>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.RoleName)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.RoleName)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Username)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Username)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+
+                <dt class="col-sm-3">
+                    @(Model.TeamId.HasValue ? @Html.DisplayNameFor(model => model.Team.Name) : "")
+                </dt>
+                <dd class="col-sm-9">
+                    @if (Model.TeamId.HasValue)
+                    {
+                        @Model.Team.Name;
+                        <a asp-controller="Teams" asp-action="Details" asp-route-id="@Model.TeamId">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-info-circle"></i> More info
+                            </button>
+                        </a>
+                    }
+                    
+                </dd>
+            </dl>
+        </div>
+        <a asp-action="Index">
+            <button class="btn btn-primary">
+                <i class="fas fa-backward"></i> Back to List
+            </button>
+        </a>
+
+        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+        {
+            <button class="btn @(Model.TeamId.HasValue? "btn-warning" : "btn-info") assing-btn">
+                <i class="fa-solid fa-people-group"></i> @(Model.TeamId.HasValue ? "Change team" : "Assign to team")
+            </button>
+        }
+
+        @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id">
+                <button class="btn btn-warning">
+                    <i class="fas fa-user-edit"></i> Edit
+                </button>
+            </a>
+
+            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != @Model?.Id)
+            {
+                <a asp-action="Delete" asp-route-id="@Model?.Id">
+                    <button class="btn btn-danger">
+                        <i class="fas fa-user-times"></i> Delete
+                    </button>
+                </a>
+            }
+        }
+    </div>
+</div>
+
+<script>
+    $(".assing-btn").on("click", function () {
+        
+        var model = {
+            userId: $(".Id").val(),
+        }
+
+        let teams = parseTeamInputs('.available-teams');
+        startAssigningToTeam(teams, model, "/Users/AssignUserToTeam");
+    });
+</script>
+

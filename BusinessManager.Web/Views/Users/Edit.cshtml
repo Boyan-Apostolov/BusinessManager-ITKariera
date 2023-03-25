@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BusinessManager.Services.DTOs.Users.BaseUserDto
+
+@{
+    ViewData["Title"] = "Edit";
+    var roles = ((IEnumerable<KeyValuePair<string, string>>)this.ViewBag.AvailableRoles).Select(x => new SelectListItem(x.Value, x.Key.ToString()));
+    var currentRole = roles.FirstOrDefault(r => r.Text == Model.RoleName);
+    var unpickedRoles = roles.Where(r => r.Text != Model.RoleName);
+}
+
+<div class="card light-shadow m-0 m-auto col-5">
+    <div class="img-fluid text-center mt-2">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://cdn.pixabay.com/photo/2017/03/08/14/20/flat-2126884_960_720.png" alt="Person image">
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Edit existing user</h5>
+        <div>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RoleName" class="control-label">Role</label>
+                    <select asp-for="RoleName" class="form-control form-control-lg" asp-items="unpickedRoles">
+                        <option value="@currentRole?.Value" selected="">@currentRole?.Text</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <br/>
+                    <a asp-action="Index">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-backward"></i> Back to List
+                        </button>
+                    </a>
+
+                    <input type="submit" value="Save" class="btn btn-success"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

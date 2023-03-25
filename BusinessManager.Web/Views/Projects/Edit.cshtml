@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BusinessManager.Services.DTOs.Projects.ProjectDto
+
+@{
+    ViewData["Title"] = "Edit";
+    var statuses = ((IEnumerable<KeyValuePair<string, string>>)this.ViewBag.AvailableStatuses)
+        .Where(s=>s.Key != Model.Status.ToString())
+        .Select(x => new SelectListItem(x.Value, x.Key.ToString()));
+
+    var priorities = ((IEnumerable<KeyValuePair<string, string>>)this.ViewBag.AvailablePriorities)
+        .Where(s=>s.Key != Model.Priority.ToString())
+        .Select(x => new SelectListItem(x.Value, x.Key.ToString()));
+
+}
+
+<div class="card light-shadow m-0 m-auto col-5">
+    <div class="img-fluid text-center mt-2">
+        <img class="card-img-top img-fluid" style="width: 20rem" style="object-fit: contain" src="https://images.unsplash.com/photo-1586281380117-5a60ae2050cc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="edit image">
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Edit existing project</h5>
+        <div>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label">Status</label>
+                    <select asp-for="Status" class="form-control form-control-lg" asp-items="@statuses">
+                        <option value="@Model.Status" selected="">@Model.Status.ToString()</option>
+                    </select>
+                </div>    
+                
+                <div class="form-group">
+                    <label asp-for="Priority" class="control-label">Priority</label>
+                    <select asp-for="Priority" class="form-control form-control-lg" asp-items="@priorities">
+                        <option value="@Model.Priority" selected="">@Model.Priority.ToString()</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <br />
+                    <a asp-action="Index">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-backward"></i> Back to List
+                        </button>
+                    </a>
+
+                    <input type="submit" value="Save" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
