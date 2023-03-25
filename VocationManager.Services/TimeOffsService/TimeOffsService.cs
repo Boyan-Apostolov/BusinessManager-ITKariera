@@ -91,10 +91,10 @@ namespace VocationManager.Services.TimeOffsService
 
         public async Task<int> CreateAsync(string userId, CreateTimeOffRequestDto timeOffRequestDto)
         {
-            timeOffRequestDto.CreatedOn = DateTime.Now;
-            timeOffRequestDto.ExternalFileUrl = "https://example.com";
-
             var newRequest = _mapper.Map<TimeOff>(timeOffRequestDto);
+
+            newRequest.CreatedOn = DateTime.Now;
+            newRequest.ExternalFileUrl = "https://example.com";
             newRequest.RequestedById = userId;
 
             await _dbContext.TimeOffs.AddAsync(newRequest);
@@ -110,7 +110,7 @@ namespace VocationManager.Services.TimeOffsService
                 .TimeOffs
                 .FirstOrDefaultAsync(r => r.Id == timeOffRequestDto.Id);
 
-            if (foundRequest == null) return;
+            if (foundRequest == null || foundRequest.IsApproved.HasValue) return;
 
             foundRequest.From = timeOffRequestDto.From;
             foundRequest.To = timeOffRequestDto.To;
@@ -126,8 +126,8 @@ namespace VocationManager.Services.TimeOffsService
             var foundRequest = await _dbContext
                 .TimeOffs
                 .FirstOrDefaultAsync(r => r.Id == requestId);
-
-            if (foundRequest == null) return;
+            
+            if (foundRequest == null || foundRequest.IsApproved.HasValue) throw new InvalidOperationException("Time-Off request not found!");
 
             _dbContext.TimeOffs.Remove(foundRequest);
 
@@ -165,6 +165,30 @@ namespace VocationManager.Services.TimeOffsService
             }
 
             return kvps;
+        }
+
+        public async Task ApproveRequest(int id)
+        {
+            var timeOffRequest = await _dbContext
+                .TimeOffs
+                .SingleAsync(t => t.Id == id);
+            if (timeOffRequest == null) throw new InvalidOperationException("Time-Off request not found!");
+
+            timeOffRequest.IsApproved = true;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeclineRequest(int id)
+        {
+            var timeOffRequest = await _dbContext
+                .TimeOffs
+                .SingleAsync(t => t.Id == id);
+            if (timeOffRequest == null) throw new InvalidOperationException("Time-Off request not found!");
+
+            timeOffRequest.IsApproved = false;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -17,5 +17,7 @@ namespace VocationManager.Services.TimeOffsService
         Task DeleteAsync(int requestId);
         Task<PaginatedTimeOffsCollectionDto?> GetPaginatedRequests(string userId, int? page, int? pageSize, string keyWord);
         IEnumerable<KeyValuePair<string, string>> GetAllRequestTypesAsKeyValuePairs();
+        Task ApproveRequest(int id);
+        Task DeclineRequest(int id);
     }
 }

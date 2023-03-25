@@ -10,6 +10,7 @@ using VocationManager.Services.DTOs.Teams;
 using VocationManager.Services.DTOs.TimeOffs;
 using VocationManager.Services.TimeOffsService;
 using System.Security.Claims;
+using VocationManager.Services.DTOs.Projects;
 
 namespace VacationManager.Controllers
 {
@@ -79,6 +80,8 @@ namespace VacationManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TimeOffRequestDto requestDto)
         {
+            ModelState.Remove(nameof(TimeOffRequestDto.RequestedBy));
+
             if (id != requestDto.Id)
             {
                 return NotFound();
@@ -94,23 +97,25 @@ namespace VacationManager.Controllers
             return View(requestDto);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var request = await _timeOffsService.GetByIdAsync(id);
-            if (request == null)
-            {
-                return NotFound();
-            }
-
-            return View(request);
+            await _timeOffsService.DeleteAsync(id);
+            return Ok();
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> ApproveRequest(int id)
         {
-            await _timeOffsService.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            await _timeOffsService.ApproveRequest(id);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeclineRequest(int id)
+        {
+            await _timeOffsService.DeclineRequest(id);
+            return Ok();
         }
     }
 }

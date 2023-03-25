@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using VocationManager.Data;
+using VocationManager.Data.Enums;
 
 namespace VacationManager.Models
 {
@@ -14,7 +15,7 @@ namespace VacationManager.Models
 
         public bool IsHalfDay { get; set; }
 
-        public TimeOff Type { get; set; }
+        public TimeOffType Type { get; set; }
 
         public bool? IsApproved { get; set; }
 
