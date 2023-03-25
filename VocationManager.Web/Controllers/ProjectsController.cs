@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VocationManager.Data;
+using VocationManager.Data.Enums;
 using VocationManager.Services.DTOs.Projects;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Users;

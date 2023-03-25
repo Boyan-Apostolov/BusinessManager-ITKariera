@@ -26,7 +26,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if(User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,8 +65,8 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Create"> <i class="fa-solid fa-plus m-1"></i> New project</a>
                                     }
                                 </ul>
-                            </div>  
-                            
+                            </div>
+
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-people-group"></i> Teams
@@ -79,8 +79,18 @@
                                     }
                                 </ul>
                             </div>
+
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-person-circle-question"></i> Requests
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimeOffs" asp-action="Index"> <i class="fa-solid fa-file-circle-question"></i> All requests</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="TimeOffs" asp-action="Create"> <i class="fa-solid fa-plus m-1"></i> New request</a>
+                                </ul>
+                            </div>
                         }
-                        
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -95,7 +105,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - VocationManager - <a href="https://github.com/Boyan-Apostolov/VocationManager-ITKariera" >Open Source System</a>
+            &copy; 2023 - VocationManager - <a href="https://github.com/Boyan-Apostolov/VocationManager-ITKariera">Open Source System</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

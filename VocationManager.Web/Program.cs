@@ -2,11 +2,13 @@ using AutoMapper;
 using GlobalConstants.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using VocationManager.Data;
 using VocationManager.Services.ProjectsService;
 using VocationManager.Services.RolesService;
 using VocationManager.Services.SeederService;
 using VocationManager.Services.TeamsService;
+using VocationManager.Services.TimeOffsService;
 using VocationManager.Services.UsersService;
 
 namespace VocationManager
@@ -48,6 +50,7 @@ namespace VocationManager
             builder.Services.AddTransient<IRolesService, RolesService>();
             builder.Services.AddTransient<IProjectsService, ProjectsService>();
             builder.Services.AddTransient<ITeamsService, TeamsService>();
+            builder.Services.AddTransient<ITimeOffsService, TimeOffsService>();
 
             var app = builder.Build();
 
