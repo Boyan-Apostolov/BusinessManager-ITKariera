@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VocationManager.Data
+namespace VocationManager.Data.Enums
 {
     public enum ProjectStatusType
     {

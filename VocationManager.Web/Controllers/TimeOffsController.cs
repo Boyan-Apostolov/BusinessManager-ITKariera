@@ -3,208 +3,114 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using VacationManager.Models;
-using VacationManager.Repositories;
+using VocationManager.Services.DTOs.Roles;
+using VocationManager.Services.DTOs.Teams;
+using VocationManager.Services.DTOs.TimeOffs;
+using VocationManager.Services.TimeOffsService;
+using System.Security.Claims;
 
 namespace VacationManager.Controllers
 {
-    /// <summary>
-    /// Class TimeOffsController.
-    /// Implements the <see cref="Controller" />
-    /// </summary>
-    /// <seealso cref="Controller" />
+    [Authorize]
     public class TimeOffsController : Controller
     {
-        /// <summary>
-        /// The context
-        /// </summary>
-        private readonly VacationManagerDbContext _context;
+        private readonly ITimeOffsService _timeOffsService;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeOffsController"/> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        public TimeOffsController(VacationManagerDbContext context)
+        public TimeOffsController(ITimeOffsService timeOffsService)
         {
-            _context = context;
+            _timeOffsService = timeOffsService;
         }
 
-        // GET: TimeOffs
-        /// <summary>
-        /// Indexes this instance.
-        /// </summary>
-        /// <returns>IActionResult.</returns>
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyWord = "")
         {
-            ViewData["Teams"] = _context.Teams;
-            ViewData["Users"] = _context.Users;
-            return View(await _context.TimeOffs.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var requests = await _timeOffsService.GetPaginatedRequests(userId, page, pageSize, keyWord);
+            return View(requests);
         }
 
-        // GET: TimeOffs/Details/5
-        /// <summary>
-        /// Detailses the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>IActionResult.</returns>
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var timeOff = await _context.TimeOffs
-                .FirstOrDefaultAsync(m => m.TimeOffId == id);
-            if (timeOff == null)
-            {
-                return NotFound();
-            }
-
-            return View(timeOff);
-        }
-
-        // GET: TimeOffs/Create
-        /// <summary>
-        /// Creates this instance.
-        /// </summary>
-        /// <returns>IActionResult.</returns>
         public IActionResult Create()
         {
+            ViewBag.RequestTypes = _timeOffsService.GetAllRequestTypesAsKeyValuePairs();
             return View();
         }
 
-        // POST: TimeOffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /// <summary>
-        /// Creates the specified time off.
-        /// </summary>
-        /// <param name="timeOff">The time off.</param>
-        /// <returns>IActionResult.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TimeOffId,From,To,HalfDay,Type,Approved,RequestingUser,CreatedOn")] TimeOff timeOff)
+        public async Task<IActionResult> Create(CreateTimeOffRequestDto timeOffDto)
         {
-            if (ModelState.IsValid)
-            {
-                timeOff.CreatedOn = DateTime.Now;
-                _context.Add(timeOff);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(timeOff);
-        }
-
-        // GET: TimeOffs/Edit/5
-        /// <summary>
-        /// Edits the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>IActionResult.</returns>
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var timeOff = await _context.TimeOffs.FindAsync(id);
-            if (timeOff == null)
-            {
-                return NotFound();
-            }
-            return View(timeOff);
-        }
-
-        // POST: TimeOffs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /// <summary>
-        /// Edits the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="timeOff">The time off.</param>
-        /// <returns>IActionResult.</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TimeOffId,From,To,CreatedOn,HalfDay,Type,Approved,RequestingUser")] TimeOff timeOff)
-        {
-            if (id != timeOff.TimeOffId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(timeOff);
-                    await _context.SaveChangesAsync();
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    await _timeOffsService.CreateAsync(userId, timeOffDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!TimeOffExists(timeOff.TimeOffId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, e.Message);
                 }
+            }
+
+            if (ModelState.ErrorCount != 0)
+            {
+                ViewBag.RequestTypes = _timeOffsService.GetAllRequestTypesAsKeyValuePairs();
+                return View(timeOffDto);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var request = await _timeOffsService.GetByIdAsync(id);
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.RequestTypes = _timeOffsService.GetAllRequestTypesAsKeyValuePairs();
+            return View(request);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, TimeOffRequestDto requestDto)
+        {
+            if (id != requestDto.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _timeOffsService.EditAsync(requestDto);
                 return RedirectToAction(nameof(Index));
             }
-            return View(timeOff);
+
+            ViewBag.RequestTypes = _timeOffsService.GetAllRequestTypesAsKeyValuePairs();
+            return View(requestDto);
         }
 
-        // GET: TimeOffs/Delete/5
-        /// <summary>
-        /// Deletes the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>IActionResult.</returns>
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            var request = await _timeOffsService.GetByIdAsync(id);
+            if (request == null)
             {
                 return NotFound();
             }
 
-            var timeOff = await _context.TimeOffs
-                .FirstOrDefaultAsync(m => m.TimeOffId == id);
-            if (timeOff == null)
-            {
-                return NotFound();
-            }
-
-            return View(timeOff);
+            return View(request);
         }
 
-        // POST: TimeOffs/Delete/5
-        /// <summary>
-        /// Deletes the confirmed.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>IActionResult.</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var timeOff = await _context.TimeOffs.FindAsync(id);
-            _context.TimeOffs.Remove(timeOff);
-            await _context.SaveChangesAsync();
+            await _timeOffsService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        /// <summary>
-        /// Times the off exists.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        private bool TimeOffExists(int id)
-        {
-            return _context.TimeOffs.Any(e => e.TimeOffId == id);
         }
     }
 }

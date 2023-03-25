@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using VacationManager.Models;
 using VocationManager.Data;
 using VocationManager.Services.DTOs.Projects;
 using VocationManager.Services.DTOs.Roles;
 using VocationManager.Services.DTOs.Teams;
+using VocationManager.Services.DTOs.TimeOffs;
 using VocationManager.Services.DTOs.Users;
 
 namespace GlobalConstants.Mappings
@@ -34,6 +36,10 @@ namespace GlobalConstants.Mappings
             CreateMap<Team, TeamDto>();
             CreateMap<TeamDto, Team>();
             CreateMap<CreateTeamDto, Team>();
+
+            CreateMap<TimeOff, TimeOffRequestDto>();
+            CreateMap<TimeOffRequestDto, TimeOff>();
+            CreateMap<CreateTimeOffRequestDto, TimeOff>();
         }
     }
 }

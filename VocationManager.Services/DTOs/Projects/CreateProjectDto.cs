@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VocationManager.Data;
+using VocationManager.Data.Enums;
 
 namespace VocationManager.Services.DTOs.Projects
 {
