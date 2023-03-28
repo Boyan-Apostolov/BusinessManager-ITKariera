@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VacationManager.Models;
 using BusinessManager.Data;
 using BusinessManager.Data.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace BusinessManager.Services.DTOs.TimeOffs
 {
@@ -32,5 +33,9 @@ namespace BusinessManager.Services.DTOs.TimeOffs
         public DateTime CreatedOn { get; set; }
 
         public string ExternalFileUrl { get; set; }
+
+        [DataType(DataType.ImageUrl)]
+        [Display(Name = "Upload external file")]
+        public IFormFile? ExternalFile { get; set; }
     }
 }

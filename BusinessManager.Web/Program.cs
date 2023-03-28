@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using BusinessManager.Data;
+using BusinessManager.Services.FileUploadService;
 using BusinessManager.Services.ProjectsService;
 using BusinessManager.Services.RolesService;
 using BusinessManager.Services.SeederService;
@@ -51,6 +52,7 @@ namespace BusinessManager
             builder.Services.AddTransient<IProjectsService, ProjectsService>();
             builder.Services.AddTransient<ITeamsService, TeamsService>();
             builder.Services.AddTransient<ITimeOffsService, TimeOffsService>();
+            builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 
             var app = builder.Build();
 

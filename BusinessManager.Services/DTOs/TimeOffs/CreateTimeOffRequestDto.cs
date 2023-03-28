@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VacationManager.Models;
 using BusinessManager.Data;
 using BusinessManager.Data.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace BusinessManager.Services.DTOs.TimeOffs
 {
@@ -22,5 +23,8 @@ namespace BusinessManager.Services.DTOs.TimeOffs
         public bool IsHalfDay { get; set; }
 
         public TimeOffType Type { get; set; }
+
+        [Display(Name = "Upload external file")]
+        public IFormFile? ExternalFile { get; set; }
     }
 }

@@ -13,6 +13,8 @@ using System.Net.Http;
 using System.Security.Claims;
 using VacationManager.Models;
 using BusinessManager.Data.Enums;
+using BusinessManager.Services.FileUploadService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessManager.Services.TimeOffsService
 {
@@ -21,14 +23,17 @@ namespace BusinessManager.Services.TimeOffsService
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFileUploadService _fileUploadService;
 
         public TimeOffsService(ApplicationDbContext dbContext,
             IMapper mapper,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IFileUploadService fileUploadService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _userManager = userManager;
+            _fileUploadService = fileUploadService;
         }
         public async Task<ICollection<TimeOffRequestDto>> GetAllAsync(string userId)
         {
@@ -92,9 +97,10 @@ namespace BusinessManager.Services.TimeOffsService
         public async Task<int> CreateAsync(string userId, CreateTimeOffRequestDto timeOffRequestDto)
         {
             var newRequest = _mapper.Map<TimeOff>(timeOffRequestDto);
-
+            var externalFileUrl = await _fileUploadService.UploadFileAsync(timeOffRequestDto.ExternalFile);
+            
             newRequest.CreatedOn = DateTime.Now;
-            newRequest.ExternalFileUrl = "https://example.com";
+            newRequest.ExternalFileUrl = externalFileUrl;
             newRequest.RequestedById = userId;
 
             await _dbContext.TimeOffs.AddAsync(newRequest);
@@ -146,6 +152,7 @@ namespace BusinessManager.Services.TimeOffsService
 
             var paginatedRequests =
                 requests
+                    .OrderByDescending(t=>t.Id)
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
                     .Take(paginator.PageSize);
 

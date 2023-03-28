@@ -4,6 +4,7 @@ let toDateHolder = $('.to-date-holder');
 let toDate = $('#To');
 
 let fileHolder = $('.file-holder-holder');
+let externalFile = $('#ExternalFile');
 
 $('#Type').on('change',
     function () {
@@ -40,6 +41,14 @@ $('#submit-btn').on('click',
                 "'To date' is required!",
                 'error'
             );
+        } else if (fileHolder.is(":visible") && !externalFile.val()) {
+            e.preventDefault();
+            Swal.fire(
+                'Error!',
+                "'External file' is required!",
+                'error'
+            );
+            return;
         }
     });
 

@@ -58,10 +58,16 @@
                         </span>
                     }
                 </div>
-                <div class="d-inline-flex justify-content-center col-3">
+                <div class="d-inline-flex justify-content-center col-3 flex-column align-items-center">
                     <span class="badge bg-info m-2">
                         Type of leave: @requestDto.Type.ToString()
                     </span>
+                    @if (requestDto.Type == TimeOffType.Sick && !string.IsNullOrWhiteSpace(requestDto.ExternalFileUrl))
+                    {
+                        <button class="btn btn-sm btn-primary file-download-button" data-file-url="@(requestDto.ExternalFileUrl)">
+                            <i class="fas fa-info-circle"></i> Download file
+                        </button>
+                    }
                 </div>
                 <div>
                     @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
@@ -102,6 +108,11 @@ else
 
 @await Html.PartialAsync("_SearchAndPaginatePartial", Model.Paginator)
 <script>
+    $('.file-download-button').click(function() {
+        let url = $(this).attr('data-file-url');
+
+        window.open(`/TimeOffs/DownloadTimeOffFile?path=${url}`);
+    });
     $('.approve-btn').on("click",
         function () {
             var requestId = $(this).attr('data-request-id');

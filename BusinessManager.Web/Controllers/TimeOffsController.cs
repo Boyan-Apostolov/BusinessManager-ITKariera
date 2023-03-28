@@ -11,6 +11,7 @@ using BusinessManager.Services.DTOs.TimeOffs;
 using BusinessManager.Services.TimeOffsService;
 using System.Security.Claims;
 using BusinessManager.Services.DTOs.Projects;
+using BusinessManager.Services.FileUploadService;
 
 namespace VacationManager.Controllers
 {
@@ -18,10 +19,13 @@ namespace VacationManager.Controllers
     public class TimeOffsController : Controller
     {
         private readonly ITimeOffsService _timeOffsService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public TimeOffsController(ITimeOffsService timeOffsService)
+        public TimeOffsController(ITimeOffsService timeOffsService, 
+            IFileUploadService fileUploadService)
         {
             _timeOffsService = timeOffsService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<IActionResult> Index(int? page = 1, int? pageSize = 10, string keyWord = "")
@@ -36,6 +40,11 @@ namespace VacationManager.Controllers
         {
             ViewBag.RequestTypes = _timeOffsService.GetAllRequestTypesAsKeyValuePairs();
             return View();
+        }
+
+        public async Task<FileContentResult> DownloadTimeOffFile(string path)
+        {
+            return await _fileUploadService.DownloadFileAsync(path);
         }
 
         [HttpPost]
