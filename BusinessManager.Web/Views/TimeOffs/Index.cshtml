@@ -14,8 +14,18 @@
         @foreach (var requestDto in Model.Requests)
         {
             <div class="w-100 d-flex align-items-center bg-white m-1 p-3 rounded-3 light-shadow">
-                <div class="d-inline-flex flex-column col-3">
-                    <strong>Requested Dates: @($"{requestDto.From:dd/MM/yyyy}") - @(requestDto.To.HasValue ? $"{requestDto.To:dd/MM/yyyy}" : "-")</strong>
+                <div class="d-inline-flex flex-column col-4">
+                    <strong>Requested Dates: @($"{requestDto.From:dd/MM/yyyy}") -
+                    @if (requestDto.IsHalfDay)
+                    {
+                        <span class="badge bg-secondary m-2"> Half day
+                        </span>
+                    }
+                    else
+                    {
+                        @($"{requestDto.To:dd/MM/yyyy}")
+                    }
+                    </strong>
                     <span>
                         Requested by: @($"{requestDto.RequestedBy.FirstName} {requestDto.RequestedBy.LastName}")
                         <a asp-controller="Users" asp-action="Details" asp-route-id="@requestDto.RequestedById" class="mb-1">
@@ -25,7 +35,7 @@
                         </a>
                     </span>
                 </div>
-                <div class="d-inline-flex justify-content-center col-3">
+                <div class="d-inline-flex justify-content-center col-2">
                     @if (requestDto.IsApproved.HasValue)
                     {
                         if (requestDto.IsApproved.Value)
