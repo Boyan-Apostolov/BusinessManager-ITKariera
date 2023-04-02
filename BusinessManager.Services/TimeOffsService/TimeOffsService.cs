@@ -45,8 +45,7 @@ namespace BusinessManager.Services.TimeOffsService
                 .ThenInclude(t => t.Users)
                 .SingleAsync(u => u.Id == userId);
             var roles = await _userManager.GetRolesAsync(user);
-
-            //TODO: Get All based on current role
+            
             var requestsQueryable = _dbContext
                 .TimeOffs
                 .Include(t => t.RequestedBy)
