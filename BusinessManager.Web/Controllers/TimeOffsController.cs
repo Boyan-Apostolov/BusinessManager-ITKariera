@@ -90,6 +90,7 @@ namespace VacationManager.Controllers
         public async Task<IActionResult> Edit(int id, TimeOffRequestDto requestDto)
         {
             ModelState.Remove(nameof(TimeOffRequestDto.RequestedBy));
+            ModelState.Remove(nameof(TimeOffRequestDto.ExternalFileUrl));
 
             if (id != requestDto.Id)
             {

@@ -10,6 +10,8 @@ namespace BusinessManager.Services.FileUploadService
 {
     public interface IFileUploadService
     {
+        Task<string> EditFileAsync(string fileUrl, IFormFile externalFile);
+
         Task<string> UploadFileAsync(IFormFile externalFile);
 
         Task<FileContentResult> DownloadFileAsync(string fileUrl);

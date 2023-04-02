@@ -124,6 +124,9 @@ namespace BusinessManager.Services.TimeOffsService
             foundRequest.IsApproved = timeOffRequestDto.IsApproved;
             foundRequest.Type = timeOffRequestDto.Type;
 
+            var newExternalFileUrl = await _fileUploadService.EditFileAsync(foundRequest.ExternalFileUrl, timeOffRequestDto.ExternalFile);
+            foundRequest.ExternalFileUrl = newExternalFileUrl;
+
             await _dbContext.SaveChangesAsync();
         }
 

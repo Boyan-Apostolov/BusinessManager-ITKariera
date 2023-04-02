@@ -31,6 +31,16 @@ namespace BusinessManager.Services.FileUploadService
                 );
         }
 
+        public async Task<string> EditFileAsync(string fileUrl, IFormFile externalFile)
+        {
+            if (!string.IsNullOrWhiteSpace(fileUrl))
+            {
+                await _dropboxClient.Files.DeleteV2Async(fileUrl);
+            }
+
+            return await UploadFileAsync(externalFile);
+        }
+
         public async Task<string> UploadFileAsync(IFormFile externalFile)
         {
             if (string.IsNullOrWhiteSpace(externalFile?.FileName)) return "";

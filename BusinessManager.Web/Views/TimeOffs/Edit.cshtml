@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers;
+@using BusinessManager.Data.Enums
 @model BusinessManager.Services.DTOs.TimeOffs.TimeOffRequestDto;
 
 @{
@@ -14,7 +15,7 @@
     <div class="card-body">
         <h5 class="card-title">Edit time-off request</h5>
         <div>
-            <form asp-action="Edit">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="ExternalFileUrl" />
                 <input type="hidden" asp-for="IsApproved" />
@@ -47,11 +48,17 @@
                     <span asp-validation-for="IsHalfDay" class="text-danger"></span>
                 </div>
                 
-                @*Todo: link for current file*@
                 <div class="form-group file-holder-holder">
                     <br/>
+                    @if (Model.Type == TimeOffType.Sick && !string.IsNullOrWhiteSpace(Model.ExternalFileUrl))
+                    {
+                        <button class="btn btn-sm btn-primary file-download-button" type="button" data-file-url="@(Model.ExternalFileUrl)">
+                            <i class="fas fa-info-circle"></i> Existing file
+                        </button>
+                    }
+                    <br/>
                     <label asp-for="ExternalFile" class="control-label"></label>
-                    <input asp-for="ExternalFile" />
+                    <input asp-for="ExternalFile"/>
                     <span asp-validation-for="ExternalFile" class="text-danger"></span>
                 </div>
 
@@ -72,4 +79,9 @@
 }
 
 <script>
+    $('.file-download-button').click(function () {
+        let url = $(this).attr('data-file-url');
+
+        window.open(`/TimeOffs/DownloadTimeOffFile?path=${url}`);
+    });
 </script>
