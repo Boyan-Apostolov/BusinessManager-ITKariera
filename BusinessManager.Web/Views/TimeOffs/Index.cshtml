@@ -1,6 +1,7 @@
 ﻿@using BusinessManager.Services
 @using BusinessManager.Data.Enums
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
 @model BusinessManager.Services.DTOs.TimeOffs.PaginatedTimeOffsCollectionDto?;
 
 @{
@@ -71,7 +72,8 @@
                     }
                 </div>
                 <div>
-                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)))
+                    @if (User.IsInRole(Enum.GetName(DefaultRoles.CEO)) 
+                         || User.IsInRole(Enum.GetName(DefaultRoles.Team_Lead)) && requestDto.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier))
                     {
                         @if (!requestDto.IsApproved.HasValue)
                         {

@@ -104,6 +104,10 @@ namespace BusinessManager.Services.UsersService
                 var role = await _rolesService.GetNameById(userDto.SelectedRole);
                 await _userManager.AddToRoleAsync(userToBeCreated, role);
             }
+            else
+            {
+                throw new InvalidOperationException(createdUser.Errors.First().Description);
+            }
 
             await _dbContext.SaveChangesAsync();
         }
