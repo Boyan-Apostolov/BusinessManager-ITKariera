@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using BusinessManager.Services.DTOs.Teams;
 using BusinessManager.Services.DTOs.TimeOffs;
 using System.Net.Http;
 using System.Security.Claims;
+using Abp.Collections.Extensions;
 using VacationManager.Models;
 using BusinessManager.Data.Enums;
 using BusinessManager.Services.FileUploadService;
@@ -98,7 +100,7 @@ namespace BusinessManager.Services.TimeOffsService
         {
             var newRequest = _mapper.Map<TimeOff>(timeOffRequestDto);
             var externalFileUrl = await _fileUploadService.UploadFileAsync(timeOffRequestDto.ExternalFile);
-            
+
             newRequest.CreatedOn = DateTime.Now;
             newRequest.ExternalFileUrl = externalFileUrl;
             newRequest.RequestedById = userId;
@@ -135,7 +137,7 @@ namespace BusinessManager.Services.TimeOffsService
             var foundRequest = await _dbContext
                 .TimeOffs
                 .FirstOrDefaultAsync(r => r.Id == requestId);
-            
+
             if (foundRequest == null || foundRequest.IsApproved.HasValue) throw new InvalidOperationException("Time-Off request not found!");
 
             _dbContext.TimeOffs.Remove(foundRequest);
@@ -148,14 +150,12 @@ namespace BusinessManager.Services.TimeOffsService
             var requests = await GetAllAsync(userId);
             var paginator = new Paginator(requests.Count, page, pageSize, "TimeOffs", true);
 
-            if (!string.IsNullOrWhiteSpace(keyWord))
-            {
-               //Try parse date and filter
-            }
+            var isSearchingDate = DateTime.TryParseExact(keyWord, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime searchedDate);
 
             var paginatedRequests =
                 requests
-                    .OrderByDescending(t=>t.Id)
+                    .WhereIf(isSearchingDate, r => r.CreatedOn.Date >= searchedDate.Date)
+                    .OrderByDescending(t => t.Id)
                     .Skip((paginator.CurrentPage - 1) * paginator.PageSize)
                     .Take(paginator.PageSize);
 

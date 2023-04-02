@@ -34,6 +34,7 @@
                             </button>
                         </a>
                     </span>
+                    <em> Requested on: @($"{requestDto.CreatedOn:dd/MM/yyyy}")</em>
                 </div>
                 <div class="d-inline-flex justify-content-center col-2">
                     @if (requestDto.IsApproved.HasValue)
