@@ -15,8 +15,11 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
-    background: #EBEDEE;
+    background-image: url(../background1.jpg);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    min-height: 100%;
 }
 
 main {
