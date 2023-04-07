@@ -61,3 +61,35 @@ function startAssigningToTeam(teamInputs, model, endpoint) {
         }
     });
 }
+
+$('form input[type="submit"]').on("click", function (e) {
+    var inputs = $('form')
+        .find('input.form-control')
+        .not('.button')
+        .not('select');
+
+    inputs.each((i, el) => {
+        var t = $(el);
+        var elValue = t.val();
+
+        if (elValue && elValue.length < 3) {
+            Swal.fire(
+                'Error!',
+                `${t.attr('Name')} requires at least 3 characters`,
+                'error'
+            );
+            e.preventDefault();
+            return false;
+        }
+
+        if (elValue && elValue.length > 250) {
+            Swal.fire(
+                'Error!',
+                `${t.attr('Name')} has a maximum of 250 characters`,
+                'error'
+            );
+            e.preventDefault();
+            return false;
+        }
+    });
+});

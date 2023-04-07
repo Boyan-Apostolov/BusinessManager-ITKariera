@@ -47,18 +47,18 @@
                     <input asp-for="IsHalfDay" />
                     <span asp-validation-for="IsHalfDay" class="text-danger"></span>
                 </div>
-                
+
                 <div class="form-group file-holder-holder">
-                    <br/>
+                    <br />
                     @if (Model.Type == TimeOffType.Sick && !string.IsNullOrWhiteSpace(Model.ExternalFileUrl))
                     {
                         <button class="btn btn-sm btn-primary file-download-button" type="button" data-file-url="@(Model.ExternalFileUrl)">
                             <i class="fas fa-info-circle"></i> Existing file
                         </button>
                     }
-                    <br/>
+                    <br />
                     <label asp-for="ExternalFile" class="control-label"></label>
-                    <input asp-for="ExternalFile"/>
+                    <input asp-for="ExternalFile" />
                     <span asp-validation-for="ExternalFile" class="text-danger"></span>
                 </div>
 
@@ -71,9 +71,9 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <script src="~/js/timeoff-validations.js"></script>
-}
+
+<script src="~/js/timeoff-validations.js"></script>
+
 @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
