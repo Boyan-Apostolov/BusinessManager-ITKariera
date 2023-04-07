@@ -149,7 +149,7 @@ namespace BusinessManager.Services.TimeOffsService
             var requests = await GetAllAsync(userId);
             var paginator = new Paginator(requests.Count, page, pageSize, "TimeOffs", true);
 
-            var isSearchingDate = DateTime.TryParseExact(keyWord, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime searchedDate);
+            var isSearchingDate = DateTime.TryParseExact(keyWord, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime searchedDate);
 
             var paginatedRequests =
                 requests

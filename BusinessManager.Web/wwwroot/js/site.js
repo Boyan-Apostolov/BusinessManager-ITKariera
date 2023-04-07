@@ -42,7 +42,7 @@ function startAssigningToTeam(teamInputs, model, endpoint) {
                         success: function (response) {
                             Swal.fire(
                                 'Success!',
-                                'User was successfully assigned to the team!',
+                                'Successfully assigned to the team!',
                                 'success'
                             ).then(() => window.location.reload());
                         },
