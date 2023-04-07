@@ -104,9 +104,21 @@ namespace BusinessManager.Services.TeamsService
         {
             var foundTeam = await _dbContext
                 .Teams
+                .Include(t => t.Users)
+                .Include(t=>t.Projects)
                 .FirstOrDefaultAsync(r => r.Id == teamId);
 
             if (foundTeam == null) return;
+
+            foreach (var user in foundTeam.Users)
+            {
+                await RemoveUserFromTeam(user.Id, teamId);
+            }    
+            
+            foreach (var project in foundTeam.Projects)
+            {
+                await RemoveProjectFromTeam(project.Id, teamId);
+            }
 
             _dbContext.Teams.Remove(foundTeam);
 
@@ -235,6 +247,34 @@ namespace BusinessManager.Services.TeamsService
             else
             {
                 throw new InvalidOperationException("User is not part of that team!");
+            }
+        }
+
+        public async Task RemoveProjectFromTeam(int projectId, int teamId)
+        {
+            var team = await _dbContext
+                .Teams
+                .Include(t => t.Projects)
+                .FirstOrDefaultAsync(t => t.Id == teamId);
+
+            if (team == null) throw new InvalidOperationException("Team not found!");
+
+            // ReSharper disable once SimplifyLinqExpressionUseAll
+            if (team.Projects.Any(u => u.Id == projectId))
+            {
+                var project = await _dbContext
+                    .Projects
+                    .FirstOrDefaultAsync(u => u.Id == projectId);
+
+                if (project == null) throw new InvalidOperationException("Project not found!");
+
+                team.Projects.Remove(project);
+
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("Project assigned to that team!");
             }
         }
     }
